@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SUDDEN 수치 계산기 (Mobile Friendly)</title>
+    <title>SUDDEN 수치 계산기 (Collapsible)</title>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -25,7 +25,7 @@
             margin-top: 0;
             margin-bottom: 20px;
             font-weight: 600;
-            color: #0056b3; /* Title color */
+            color: #0056b3;
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
         }
@@ -37,8 +37,14 @@
              color: #555;
         }
         .form-item {
-            margin-bottom: 25px;
+            margin-bottom: 15px; /* Reduced margin as button adds space */
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
         }
+        .form-item:last-of-type {
+             border-bottom: none; /* Remove border for last item in section */
+        }
+
         .form-item label {
             display: block;
             font-weight: bold;
@@ -50,22 +56,50 @@
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            box-sizing: border-box; /* Important for 100% width */
+            box-sizing: border-box;
             font-size: 1em;
-            margin-bottom: 8px; /* Space between input and notes */
+            margin-bottom: 10px; /* Space between input and toggle button */
         }
         /* Input background colors */
         .input-yellow { background-color: #FFFFE0; }
         .input-blue   { background-color: #E6F0FF; }
         .input-orange { background-color: #FFF0E0; }
 
+        /* Toggle Button Styling */
+        .toggle-details-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 0.85em;
+            color: #333;
+            margin-bottom: 10px; /* Space below button */
+            display: inline-block; /* Fit content width */
+        }
+        .toggle-details-btn:hover {
+            background-color: #e0e0e0;
+        }
+        .toggle-details-btn .arrow {
+            display: inline-block;
+            margin-left: 5px;
+            transition: transform 0.2s ease-in-out;
+        }
+        .toggle-details-btn.active .arrow {
+             transform: rotate(180deg);
+        }
+
+
+        /* Details Section - Hidden by default */
         .details {
             font-size: 0.9em;
             color: #555;
-            background-color: #f0f0f0; /* Subtle background for details */
-            padding: 10px;
+            background-color: #f8f8f8;
+            padding: 12px;
             border-radius: 4px;
-            border-left: 3px solid #ccc;
+            border: 1px solid #eee; /* Lighter border */
+            margin-top: 5px; /* Space above details when shown */
+            display: none; /* Hide by default */
         }
         .details .notes-title,
         .details .example-title {
@@ -73,6 +107,10 @@
             display: block;
             margin-bottom: 5px;
             color: #333;
+            font-size: 1.05em; /* Slightly larger title */
+            border-bottom: 1px solid #eee;
+            padding-bottom: 3px;
+            margin-bottom: 8px;
         }
         .details p {
             margin-top: 0;
@@ -81,6 +119,8 @@
         .details p:last-child {
              margin-bottom: 0;
         }
+
+        /* Output Section */
         .output-section {
             margin-top: 30px;
             padding-top: 20px;
@@ -94,64 +134,67 @@
         .output-value {
             font-size: 1.5em;
             font-weight: bold;
-            color: #007bff; /* Highlight color for result */
+            color: #007bff;
             background-color: #e9f5ff;
             padding: 15px;
             border-radius: 4px;
             text-align: center;
             min-height: 30px;
-            word-wrap: break-word; /* Handle potential long numbers */
+            word-wrap: break-word;
+            margin-bottom: 10px; /* Space before output toggle */
         }
         .output-details { /* Details specific to output */
-             margin-top: 10px;
+             margin-top: 5px; /* Align with other details */
         }
 
-        /* Optional: Larger screens can have side-by-side details */
+        /* Responsive adjustments (optional, primarily for side-by-side on desktop) */
         @media (min-width: 768px) {
              .form-item {
                  display: flex;
-                 flex-wrap: wrap; /* Allow wrapping if needed */
-                 align-items: flex-start; /* Align items to top */
+                 flex-wrap: wrap;
+                 align-items: flex-start;
+                 border-bottom: none; /* Remove border in flex layout */
+                 margin-bottom: 20px; /* Increase spacing */
+             }
+             .label-input-wrapper { /* Group label and input */
+                 width: 40%; /* Adjust as needed */
+                 padding-right: 20px;
+                 box-sizing: border-box;
+                 margin-bottom: 0; /* Reset margin */
+             }
+             .toggle-details-wrapper { /* Wrapper for button and details */
+                  flex: 1; /* Takes remaining space */
+                  min-width: 250px;
              }
              .form-item label {
-                 width: 200px; /* Fixed label width on desktop */
-                 margin-bottom: 0; /* Remove bottom margin for label */
-                 padding-right: 15px; /* Space between label and input */
-                 box-sizing: border-box;
+                 /* Already block, fine */
              }
-             .input-wrapper {
-                 flex: 1; /* Takes remaining space */
-                 min-width: 150px; /* Prevent input getting too small */
-                 margin-right: 15px; /* Space between input and details */
-                 margin-bottom: 10px; /* Space below input if details wrap */
+             .form-item input[type="number"] {
+                  margin-bottom: 10px; /* Keep space before button */
              }
-              .form-item input[type="number"] {
-                  margin-bottom: 0;
-              }
              .details {
-                 flex: 2; /* Takes more space for details */
-                 min-width: 250px; /* Min width for details */
-                 margin-top: 0; /* Align details with input */
-                 background-color: transparent; /* Remove background on desktop? */
-                 border-left: none;
-                 padding: 5px 0 0 10px; /* Adjust padding */
-                 border-left: 2px solid #eee;
+                margin-top: 5px;
              }
+
              .output-section {
                   display: flex;
-                  align-items: center;
+                  flex-wrap: wrap;
+                  align-items: flex-start;
+             }
+             .output-label-value-wrapper {
+                  width: 40%; /* Adjust as needed */
+                  padding-right: 20px;
+                  box-sizing: border-box;
              }
              .output-label-wrapper {
-                  width: 200px;
-                  padding-right: 15px;
+                 width: 100%; /* Take full width within its wrapper */
              }
              .output-value-wrapper {
-                  flex: 1;
-                  margin-right: 15px;
+                 width: 100%;
              }
-             .output-details {
-                  flex: 2;
-                  margin-top: 0;
+             .output-toggle-details-wrapper {
+                 flex: 1;
+                 min-width: 250px;
              }
         }
 
@@ -162,7 +205,7 @@
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 1</h2>
 
-        <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px;">
+        <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;"> <!-- Keep goal visible -->
              <span class="example-title">목표 예시</span>
              <p>LIFT 수치가 20일 때의 설상가단 EX의 SUDDEN 수치를 구하고자 합니다.</p>
         </div>
@@ -170,64 +213,82 @@
         <h3 class="section-title">입력 항목</h3>
 
         <div class="form-item">
-            <label for="maxBpm">해당 곡의 최고 BPM</label>
-            <div class="input-wrapper">
+            <div class="label-input-wrapper">
+                <label for="maxBpm">해당 곡의 최고 BPM</label>
                 <input type="number" id="maxBpm" class="input-yellow" oninput="calculateSudden1()">
             </div>
-            <div class="details">
-                <span class="notes-title">참고</span>
-                <p>해당 곡의 최고 BPM 혹은 SUDDEN을 걸지 않을 구간의 BPM을 입력합니다. 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
-                <span class="example-title">사용예시</span>
-                <p>설상가단의 최고 BPM은 180이므로 180을 입력합니다(혹은, 720 배속을 보는 유저라면 720을 입력해도 무관합니다. 단, 이 경우에는 밑의 항목에도 배속을 입력해야 합니다.)</p>
+            <div class="toggle-details-wrapper">
+                <button type="button" class="toggle-details-btn" data-target="details-maxBpm">
+                    참고/예시 보기 <span class="arrow">▼</span>
+                </button>
+                <div class="details" id="details-maxBpm">
+                    <span class="notes-title">참고</span>
+                    <p>해당 곡의 최고 BPM 혹은 SUDDEN을 걸지 않을 구간의 BPM을 입력합니다. 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>설상가단의 최고 BPM은 180이므로 180을 입력합니다(혹은, 720 배속을 보는 유저라면 720을 입력해도 무관합니다. 단, 이 경우에는 밑의 항목에도 배속을 입력해야 합니다.)</p>
+                </div>
             </div>
         </div>
 
         <div class="form-item">
-            <label for="suddenBpm">SUDDEN을 걸고자 하는 구간의 BPM</label>
-            <div class="input-wrapper">
+            <div class="label-input-wrapper">
+                <label for="suddenBpm">SUDDEN을 걸고자 하는 구간의 BPM</label>
                 <input type="number" id="suddenBpm" class="input-blue" oninput="calculateSudden1()">
             </div>
-            <div class="details">
-                <span class="notes-title">참고</span>
-                <p>SUDDEN을 걸고자 하는 구간의 BPM을 입력합니다(대부분의 경우 최저 BPM). 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
-                <span class="example-title">사용예시</span>
-                <p>설상가단의 저속 구간의 BPM은 105이므로 105를 입력합니다(위에서 720을 입력했다면 이 항목에 105 대신 420을 입력해야 합니다).</p>
+             <div class="toggle-details-wrapper">
+                <button type="button" class="toggle-details-btn" data-target="details-suddenBpm">
+                    참고/예시 보기 <span class="arrow">▼</span>
+                </button>
+                <div class="details" id="details-suddenBpm">
+                    <span class="notes-title">참고</span>
+                    <p>SUDDEN을 걸고자 하는 구간의 BPM을 입력합니다(대부분의 경우 최저 BPM). 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>설상가단의 저속 구간의 BPM은 105이므로 105를 입력합니다(위에서 720을 입력했다면 이 항목에 105 대신 420을 입력해야 합니다).</p>
+                </div>
             </div>
         </div>
 
         <div class="form-item">
-            <label for="liftValue1">LIFT 수치</label>
-            <div class="input-wrapper">
+             <div class="label-input-wrapper">
+                <label for="liftValue1">LIFT 수치</label>
                 <input type="number" id="liftValue1" class="input-orange" oninput="calculateSudden1()">
             </div>
-            <div class="details">
-                 <span class="notes-title">참고</span>
-                 <p>LIFT 수치를 입력합니다.</p>
-                 <span class="example-title">사용예시</span>
-                 <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
+            <div class="toggle-details-wrapper">
+                <button type="button" class="toggle-details-btn" data-target="details-liftValue1">
+                    참고/예시 보기 <span class="arrow">▼</span>
+                </button>
+                <div class="details" id="details-liftValue1">
+                     <span class="notes-title">참고</span>
+                     <p>LIFT 수치를 입력합니다.</p>
+                     <span class="example-title">사용예시</span>
+                     <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
+                </div>
             </div>
         </div>
 
         <div class="output-section">
-             <div class="output-label-wrapper">
+             <div class="output-label-value-wrapper">
                   <span class="output-label">적정 SUDDEN 수치 (계산 결과 1)</span>
-             </div>
-             <div class="output-value-wrapper">
                   <div id="result1" class="output-value"></div>
              </div>
-             <div class="details output-details">
-                 <span class="notes-title">참고</span>
-                 <p>BPM을 이용하여 계산한 결과입니다.</p>
-                 <span class="example-title">사용예시</span>
-                 <p>계산 결과로 -95가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -95에 맞추고 게임을 플레이하면 됩니다.</p>
+             <div class="output-toggle-details-wrapper">
+                  <button type="button" class="toggle-details-btn" data-target="details-result1">
+                      결과 설명 보기 <span class="arrow">▼</span>
+                  </button>
+                  <div class="details output-details" id="details-result1">
+                       <span class="notes-title">참고</span>
+                       <p>BPM을 이용하여 계산한 결과입니다.</p>
+                       <span class="example-title">사용예시</span>
+                       <p>계산 결과로 -95가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -95에 맞추고 게임을 플레이하면 됩니다.</p>
+                  </div>
             </div>
         </div>
-    </div>
+    </div> <!-- End Calculator 1 -->
 
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 2</h2>
 
-         <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px;">
+         <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;"> <!-- Keep goal visible -->
              <span class="example-title">목표 예시</span>
              <p>LIFT를 사용하지 않았을 때 설상가단 EX의 SUDDEN 수치를 -95로 맞추고 플레이하는 유저가 LIFT 수치가 20일 때의 설상가단 EX의 SUDDEN 수치를 구하고자 합니다.</p>
         </div>
@@ -235,67 +296,80 @@
         <h3 class="section-title">입력 항목</h3>
 
         <div class="form-item">
-            <label for="suddenAtLift0">LIFT 수치가 0일 때 사용했던 SUDDEN 수치</label>
-             <div class="input-wrapper">
+            <div class="label-input-wrapper">
+                <label for="suddenAtLift0">LIFT 수치가 0일 때 사용했던 SUDDEN 수치</label>
                 <input type="number" id="suddenAtLift0" class="input-yellow" oninput="calculateSudden2()">
              </div>
-            <div class="details">
-                 <span class="notes-title">참고</span>
-                 <p>LIFT 수치가 0일 때(LIFT 옵션이 OFF일 때) 사용했던 SUDDEN 수치를 입력합니다. 이때, 항상 음수값만을 입력해야 합니다.</p>
-                 <span class="example-title">사용예시</span>
-                 <p>LIFT를 사용하지 않았을 때의 SUDDEN 수치가 -95였으므로, -95를 입력합니다.</p>
+            <div class="toggle-details-wrapper">
+                <button type="button" class="toggle-details-btn" data-target="details-suddenAtLift0">
+                    참고/예시 보기 <span class="arrow">▼</span>
+                </button>
+                <div class="details" id="details-suddenAtLift0">
+                     <span class="notes-title">참고</span>
+                     <p>LIFT 수치가 0일 때(LIFT 옵션이 OFF일 때) 사용했던 SUDDEN 수치를 입력합니다. 이때, 항상 음수값만을 입력해야 합니다.</p>
+                     <span class="example-title">사용예시</span>
+                     <p>LIFT를 사용하지 않았을 때의 SUDDEN 수치가 -95였으므로, -95를 입력합니다.</p>
+                </div>
             </div>
         </div>
 
         <div class="form-item">
-            <label for="liftValue2">사용하고 있는 LIFT 수치</label>
-            <div class="input-wrapper">
+            <div class="label-input-wrapper">
+                <label for="liftValue2">사용하고 있는 LIFT 수치</label>
                 <input type="number" id="liftValue2" class="input-blue" oninput="calculateSudden2()">
             </div>
-            <div class="details">
-                 <span class="notes-title">참고</span>
-                 <p>현재 사용중인 LIFT 수치를 입력합니다.</p>
-                 <span class="example-title">사용예시</span>
-                 <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
+            <div class="toggle-details-wrapper">
+                <button type="button" class="toggle-details-btn" data-target="details-liftValue2">
+                    참고/예시 보기 <span class="arrow">▼</span>
+                </button>
+                <div class="details" id="details-liftValue2">
+                     <span class="notes-title">참고</span>
+                     <p>현재 사용중인 LIFT 수치를 입력합니다.</p>
+                     <span class="example-title">사용예시</span>
+                     <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
+                </div>
             </div>
         </div>
 
          <div class="output-section">
-              <div class="output-label-wrapper">
+             <div class="output-label-value-wrapper">
                    <span class="output-label">적정 SUDDEN 수치 (계산 결과 2)</span>
-              </div>
-              <div class="output-value-wrapper">
                    <div id="result2" class="output-value"></div>
-              </div>
-             <div class="details output-details">
-                 <span class="notes-title">참고</span>
-                 <p>LIFT 0일 때의 SUDDEN 수치를 이용하여 계산한 결과입니다.</p>
-                 <span class="example-title">사용예시</span>
-                 <p>계산 결과로 -102.8125가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -103으로 맞추고 게임을 플레이하면 됩니다. (보통 소수점 버림)</p>
-            </div>
+             </div>
+             <div class="output-toggle-details-wrapper">
+                  <button type="button" class="toggle-details-btn" data-target="details-result2">
+                      결과 설명 보기 <span class="arrow">▼</span>
+                  </button>
+                  <div class="details output-details" id="details-result2">
+                       <span class="notes-title">참고</span>
+                       <p>LIFT 0일 때의 SUDDEN 수치를 이용하여 계산한 결과입니다.</p>
+                       <span class="example-title">사용예시</span>
+                       <p>계산 결과로 -102.8125가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -103으로 맞추고 게임을 플레이하면 됩니다. (보통 소수점 버림)</p>
+                  </div>
+             </div>
         </div>
-    </div>
+    </div> <!-- End Calculator 2 -->
 
     <script>
+        // --- Calculation Functions (Unchanged) ---
         function calculateSudden1() {
             const maxBpm = parseFloat(document.getElementById('maxBpm').value);
             const suddenBpm = parseFloat(document.getElementById('suddenBpm').value);
             const liftValue1 = parseFloat(document.getElementById('liftValue1').value);
             const resultCell = document.getElementById('result1');
 
-            resultCell.textContent = ''; // Clear previous result or error
+            resultCell.textContent = '';
+            resultCell.style.color = '#007bff'; // Reset color
+
             if (isNaN(maxBpm) || isNaN(suddenBpm) || isNaN(liftValue1)) {
-                 // Don't show error for empty inputs, just clear result
                 return;
             }
             if (maxBpm === 0) {
                 resultCell.textContent = '#DIV/0!';
-                resultCell.style.color = 'red'; // Make error noticeable
+                resultCell.style.color = 'red';
                 return;
             }
-            // Formula: =(1-C4/C3)*(320-C5)-220
             const result = (1 - suddenBpm / maxBpm) * (320 - liftValue1) - 220;
-            resultCell.style.color = '#007bff'; // Reset color for valid result
             resultCell.textContent = result.toFixed(4);
         }
 
@@ -304,25 +378,46 @@
             const liftValue2 = parseFloat(document.getElementById('liftValue2').value);
             const resultCell = document.getElementById('result2');
 
-             resultCell.textContent = ''; // Clear previous result or error
+             resultCell.textContent = '';
+             resultCell.style.color = '#007bff'; // Reset color
+
              if (isNaN(suddenAtLift0) || isNaN(liftValue2)) {
-                // Don't show error for empty inputs, just clear result
                 return;
             }
-            // Formula: =(C9+220)*(320-C10)/320-220
             const result = (suddenAtLift0 + 220) * (320 - liftValue2) / 320 - 220;
-            resultCell.style.color = '#007bff'; // Reset color
             resultCell.textContent = result.toFixed(4);
         }
 
-        // Optional: Add event listeners instead of inline oninput for cleaner HTML
-        // window.addEventListener('DOMContentLoaded', () => {
-        //     document.getElementById('maxBpm').addEventListener('input', calculateSudden1);
-        //     document.getElementById('suddenBpm').addEventListener('input', calculateSudden1);
-        //     document.getElementById('liftValue1').addEventListener('input', calculateSudden1);
-        //     document.getElementById('suddenAtLift0').addEventListener('input', calculateSudden2);
-        //     document.getElementById('liftValue2').addEventListener('input', calculateSudden2);
-        // });
+        // --- Toggle Details Functionality ---
+        document.addEventListener('click', function(event) {
+            // Find the closest toggle button ancestor
+            const button = event.target.closest('.toggle-details-btn');
+
+            // If the click wasn't on or inside a toggle button, ignore it
+            if (!button) return;
+
+            const targetId = button.getAttribute('data-target');
+            const targetElement = document.getElementById(targetId);
+            const arrow = button.querySelector('.arrow');
+
+            if (targetElement) {
+                // Check if the element is currently hidden or has no display style set
+                const isHidden = targetElement.style.display === 'none' || targetElement.style.display === '';
+
+                if (isHidden) {
+                    targetElement.style.display = 'block'; // Show the details
+                    button.classList.add('active'); // Add class for styling (like arrow rotation)
+                    arrow.textContent = '▲';
+                    // Optionally change button text: button.firstChild.textContent = '... 숨기기 ';
+                } else {
+                    targetElement.style.display = 'none'; // Hide the details
+                    button.classList.remove('active'); // Remove active class
+                    arrow.textContent = '▼';
+                     // Optionally change button text: button.firstChild.textContent = '... 보기 ';
+                }
+            }
+        });
+
     </script>
 
 </body>
