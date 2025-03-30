@@ -147,7 +147,23 @@
              margin-top: 5px; /* Align with other details */
         }
 
-        /* Responsive adjustments (optional, primarily for side-by-side on desktop) */
+        /* Source Link Styling */
+        .source-link {
+             text-align: center;
+             margin-top: 30px;
+             font-size: 0.9em;
+             color: #666;
+        }
+        .source-link a {
+            color: #0056b3;
+            text-decoration: none;
+        }
+        .source-link a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* Responsive adjustments */
         @media (min-width: 768px) {
              .form-item {
                  display: flex;
@@ -401,7 +417,7 @@
             resultCell.textContent = result.toFixed(4);
         }
 
-        // --- Toggle Details Functionality (Unchanged) ---
+        // --- Toggle Details Functionality ---
         document.addEventListener('click', function(event) {
             const button = event.target.closest('.toggle-details-btn');
             if (!button) return;
@@ -425,6 +441,11 @@
         });
 
     </script>
+
+    <!-- Added Source Link -->
+    <div class="source-link">
+        <p>출처: <a href="https://gall.dcinside.com/m/popn/238266" target="_blank" rel="noopener noreferrer">https://gall.dcinside.com/m/popn/238266</a></p>
+    </div>
 
 </body>
 </html>
