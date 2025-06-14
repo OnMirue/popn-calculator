@@ -239,23 +239,18 @@
 
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 1</h2>
-
         <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;">
              <span class="example-title">참고/목표 예시</span>
              <p>이 계산기는 최고 BPM, SUDDEN을 걸고자 하는 구간의 BPM, LIFT 수치를 바탕으로 SUDDEN 수치를 계산해 주는 계산기입니다. SUDDEN을 걸지 않았을 때와 노트가 화면에 나타나는 시간이 비슷하게 되도록 SUDDEN 수치를 구해줍니다. 하지만, 체감상 적정 SUDDEN 수치와 괴리가 있는 편이니 본래 사용하는 SUDDEN 수치가 있다면 밑의 계산기를 이용하는 것을 추천합니다.<br><br>LIFT 수치가 20일 때의 설상단화 EX의 SUDDEN 수치를 구하고자 합니다.</p>
         </div>
-
         <h3 class="section-title">입력 항목</h3>
-
         <div class="form-item">
             <div class="label-input-wrapper">
                 <label for="maxBpm">해당 곡의 최고 BPM</label>
                 <input type="number" id="maxBpm" class="input-yellow" oninput="calculateSudden1()">
             </div>
             <div class="toggle-details-wrapper">
-                <button type="button" class="toggle-details-btn" data-target="details-maxBpm">
-                    참고/예시 보기 <span class="arrow">▼</span>
-                </button>
+                <button type="button" class="toggle-details-btn" data-target="details-maxBpm">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-maxBpm">
                     <span class="notes-title">참고</span>
                     <p>해당 곡의 최고 BPM 혹은 SUDDEN을 걸지 않을 구간의 BPM을 입력합니다. 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
@@ -264,16 +259,13 @@
                 </div>
             </div>
         </div>
-
         <div class="form-item">
             <div class="label-input-wrapper">
                 <label for="suddenBpm">SUDDEN을 걸고자 하는 구간의 BPM</label>
                 <input type="number" id="suddenBpm" class="input-blue" oninput="calculateSudden1()">
             </div>
              <div class="toggle-details-wrapper">
-                <button type="button" class="toggle-details-btn" data-target="details-suddenBpm">
-                    참고/예시 보기 <span class="arrow">▼</span>
-                </button>
+                <button type="button" class="toggle-details-btn" data-target="details-suddenBpm">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-suddenBpm">
                     <span class="notes-title">참고</span>
                     <p>SUDDEN을 걸고자 하는 구간의 BPM을 입력합니다(대부분의 경우 최저 BPM). 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
@@ -282,16 +274,13 @@
                 </div>
             </div>
         </div>
-
         <div class="form-item">
              <div class="label-input-wrapper">
                 <label for="liftValue1">LIFT 수치</label>
                 <input type="number" id="liftValue1" class="input-orange" oninput="calculateSudden1()">
             </div>
             <div class="toggle-details-wrapper">
-                <button type="button" class="toggle-details-btn" data-target="details-liftValue1">
-                    참고/예시 보기 <span class="arrow">▼</span>
-                </button>
+                <button type="button" class="toggle-details-btn" data-target="details-liftValue1">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-liftValue1">
                      <span class="notes-title">참고</span>
                      <p>LIFT 수치를 입력합니다. 입력하지 않으면 LIFT 0으로 간주하여 계산합니다.</p>
@@ -300,16 +289,13 @@
                 </div>
             </div>
         </div>
-
         <div class="output-section">
              <div class="output-label-value-wrapper">
                   <span class="output-label">적정 SUDDEN 수치</span>
                   <div id="result1" class="output-value"></div>
              </div>
              <div class="output-toggle-details-wrapper">
-                  <button type="button" class="toggle-details-btn" data-target="details-result1">
-                      결과 설명 보기 <span class="arrow">▼</span>
-                  </button>
+                  <button type="button" class="toggle-details-btn" data-target="details-result1">결과 설명 보기 <span class="arrow">▼</span></button>
                   <div class="details output-details" id="details-result1">
                        <span class="notes-title">참고</span>
                        <p>BPM과 LIFT 수치(입력 시)를 이용하여 계산한 결과입니다.</p>
@@ -322,23 +308,18 @@
 
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 2</h2>
-
          <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;">
              <span class="example-title">참고/목표 예시</span>
              <p>이 계산기는 LIFT 수치가 0일 때(LIFT 옵션이 OFF일 때)의 SUDDEN 수치, 현재 사용중인 LIFT 수치를 바탕으로 적정 SUDDEN 수치를 계산해 주는 계산기입니다. <br><br>LIFT를 사용하지 않았을 때 설상단화 EX의 SUDDEN 수치를 -95로 맞추고 플레이하는 유저가 LIFT 수치가 20일 때의 설상단화 EX의 SUDDEN 수치를 구하고자 합니다.</p>
         </div>
-
         <h3 class="section-title">입력 항목</h3>
-
         <div class="form-item">
             <div class="label-input-wrapper">
                 <label for="suddenAtLift0">LIFT 수치가 0일 때 사용했던 SUDDEN 수치</label>
                 <input type="number" id="suddenAtLift0" class="input-yellow" oninput="calculateSudden2()">
              </div>
             <div class="toggle-details-wrapper">
-                <button type="button" class="toggle-details-btn" data-target="details-suddenAtLift0">
-                    참고/예시 보기 <span class="arrow">▼</span>
-                </button>
+                <button type="button" class="toggle-details-btn" data-target="details-suddenAtLift0">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-suddenAtLift0">
                      <span class="notes-title">참고</span>
                      <p>LIFT 수치가 0일 때 사용했던 SUDDEN 수치를 입력합니다. 이때, 항상 음수값만을 입력해야 합니다.</p>
@@ -347,16 +328,13 @@
                 </div>
             </div>
         </div>
-
         <div class="form-item">
             <div class="label-input-wrapper">
                 <label for="liftValue2">사용하고 있는 LIFT 수치</label>
                 <input type="number" id="liftValue2" class="input-blue" oninput="calculateSudden2()">
             </div>
             <div class="toggle-details-wrapper">
-                <button type="button" class="toggle-details-btn" data-target="details-liftValue2">
-                    참고/예시 보기 <span class="arrow">▼</span>
-                </button>
+                <button type="button" class="toggle-details-btn" data-target="details-liftValue2">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-liftValue2">
                      <span class="notes-title">참고</span>
                      <p>현재 사용중인 LIFT 수치를 입력합니다.</p>
@@ -365,16 +343,13 @@
                 </div>
             </div>
         </div>
-
          <div class="output-section">
              <div class="output-label-value-wrapper">
                    <span class="output-label">적정 SUDDEN 수치</span>
                    <div id="result2" class="output-value"></div>
              </div>
              <div class="output-toggle-details-wrapper">
-                  <button type="button" class="toggle-details-btn" data-target="details-result2">
-                      결과 설명 보기 <span class="arrow">▼</span>
-                  </button>
+                  <button type="button" class="toggle-details-btn" data-target="details-result2">결과 설명 보기 <span class="arrow">▼</span></button>
                   <div class="details output-details" id="details-result2">
                        <span class="notes-title">참고</span>
                        <p>LIFT 0일 때의 SUDDEN 수치를 이용하여 계산한 결과입니다.</p>
@@ -386,28 +361,23 @@
     </div>
     
     <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
-    <!--              새로 추가된 서든 계산기 3              -->
+    <!--              수정된 서든 계산기 3                 -->
     <!-- ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼ -->
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 3</h2>
-
         <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;">
              <span class="example-title">참고/목표 예시</span>
              <p>이 계산기는 원하는 속도를 직접 설정할 수 없을 때, 배속과 SUDDEN 값을 조합하여 원하는 속도를 맞추기 위한 최적의 값을 찾아줍니다.<br><br>
-                예를 들어 BPM 200인 곡에서 속도 670을 맞추고 싶지만, 인게임 설정은 660, 680만 가능할 때 이 계산기를 사용합니다. 계산기는 SUDDEN 최소값(-200)을 넘지 않는 가장 가까운 설정(배속 x3.1, 속도 620)과 그때 필요한 SUDDEN 값(-196.1194)을 찾아줍니다.</p>
+                예를 들어 BPM 200인 곡에서 속도 670을 맞추고 싶지만, 인게임 설정은 660, 680만 가능할 때 이 계산기를 사용합니다. 계산기는 SUDDEN 최소값(-200)을 넘지 않는 가장 가까운 설정과 그보다 한 단계 높은 배속의 설정을 함께 찾아줍니다.</p>
         </div>
-
         <h3 class="section-title">입력 항목</h3>
-
         <div class="form-item">
             <div class="label-input-wrapper">
                 <label for="mainBpm3">곡의 BPM</label>
                 <input type="number" id="mainBpm3" class="input-green" oninput="calculateSudden3()">
              </div>
             <div class="toggle-details-wrapper">
-                <button type="button" class="toggle-details-btn" data-target="details-mainBpm3">
-                    참고/예시 보기 <span class="arrow">▼</span>
-                </button>
+                <button type="button" class="toggle-details-btn" data-target="details-mainBpm3">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-mainBpm3">
                      <span class="notes-title">참고</span>
                      <p>기준이 되는 곡의 BPM을 입력합니다. 변속곡의 경우 주가 되는 BPM을 입력하세요.</p>
@@ -416,16 +386,13 @@
                 </div>
             </div>
         </div>
-
         <div class="form-item">
             <div class="label-input-wrapper">
                 <label for="targetSpeed3">원하는 속도</label>
                 <input type="number" id="targetSpeed3" class="input-purple" oninput="calculateSudden3()">
             </div>
             <div class="toggle-details-wrapper">
-                <button type="button" class="toggle-details-btn" data-target="details-targetSpeed3">
-                    참고/예시 보기 <span class="arrow">▼</span>
-                </button>
+                <button type="button" class="toggle-details-btn" data-target="details-targetSpeed3">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-targetSpeed3">
                      <span class="notes-title">참고</span>
                      <p>최종적으로 맞추고 싶은 노트의 스크롤 속도를 입력합니다.</p>
@@ -434,22 +401,27 @@
                 </div>
             </div>
         </div>
-
          <div class="output-section">
              <div class="output-label-value-wrapper">
                    <span class="output-label">계산 결과 (배속, SUDDEN)</span>
                    <div id="result3" class="output-value"></div>
              </div>
              <div class="output-toggle-details-wrapper">
-                  <button type="button" class="toggle-details-btn" data-target="details-result3">
-                      결과 설명 보기 <span class="arrow">▼</span>
-                  </button>
+                  <button type="button" class="toggle-details-btn" data-target="details-result3">결과 설명 보기 <span class="arrow">▼</span></button>
                   <div class="details output-details" id="details-result3">
                        <span class="notes-title">참고</span>
-                       <p>결과는 `배속 (실제 속도), SUDDEN 수치` 형식으로 표시됩니다. LIFT는 0 기준으로 계산됩니다.</p>
+                       <p>두 가지 결과를 표시합니다:<br>
+                       <b>상단:</b> SUDDEN 값이 -200 이상인 가장 가까운 추천 설정입니다.<br>
+                       <b>하단:</b> 그보다 한 단계 높은 배속의 참고용 설정입니다. (SUDDEN 값은 -200 미만)
+                       </p>
+                       <p>LIFT는 0 기준으로 계산됩니다.</p>
                        <span class="example-title">사용예시</span>
-                       <p><b>입력:</b> BPM 200, 원하는 속도 670<br><b>출력:</b> x3.1 (620), -196.1194<br>게임에서 배속을 3.1배(속도 620)로 설정하고, SUDDEN을 -196으로 맞추면 원하는 속도 670과 유사한 체감 속도를 얻을 수 있습니다.</p>
-                       <p><b>입력:</b> BPM 300, 원하는 속도 670<br><b>출력:</b> x2.0 (600), -186.5672<br>게임에서 배속을 2.0배(속도 600)로 설정하고, SUDDEN을 -187으로 맞추면 됩니다.</p>
+                       <p><b>입력:</b> BPM 350, 원하는 속도 670<br>
+                       <b>출력:</b><br>
+                       x1.7 (595), -184.1791<br>
+                       x1.8 (630), -203.8806<br>
+                       추천 설정은 배속 1.7배(속도 595)에 SUDDEN -184입니다. 1.8배로 설정할 경우 SUDDEN이 -200을 초과하여 화면이 너무 많이 가려질 수 있습니다.
+                       </p>
                   </div>
              </div>
         </div>
@@ -499,26 +471,22 @@
             resultCell.textContent = result.toFixed(4);
         }
 
-        // --- NEW FUNCTION for Calculator 3 ---
+        // --- MODIFIED FUNCTION for Calculator 3 ---
         function calculateSudden3() {
             const mainBpm = parseFloat(document.getElementById('mainBpm3').value);
             const targetSpeed = parseFloat(document.getElementById('targetSpeed3').value);
             const resultCell = document.getElementById('result3');
 
-            resultCell.textContent = '';
+            resultCell.innerHTML = ''; // Use innerHTML to allow <br> tags
             resultCell.style.color = '#007bff';
 
             if (isNaN(mainBpm) || isNaN(targetSpeed) || mainBpm <= 0 || targetSpeed <= 0) {
-                return; // Exit if inputs are invalid
+                return;
             }
 
-            // Start with the multiplier that gives a speed just under or equal to the target speed.
-            // (targetSpeed / mainBpm) gives the ideal multiplier.
-            // Multiply by 10, floor it, then divide by 10 to get the nearest 0.1 step below.
             let multiplier = Math.floor((targetSpeed / mainBpm) * 10) / 10;
             
-            // Loop downwards from the starting multiplier until a valid SUDDEN value is found.
-            for (let i = 0; i < 100; i++) { // Safety break after 100 tries
+            for (let i = 0; i < 100; i++) {
                 if (multiplier <= 0) {
                     resultCell.textContent = '적절한 값을 찾을 수 없습니다.';
                     resultCell.style.color = 'red';
@@ -526,24 +494,32 @@
                 }
 
                 const actualSpeed = mainBpm * multiplier;
-                
-                // Formula to calculate the required SUDDEN value (assuming LIFT is 0)
-                // Derived from: result = (1 - suddenBpm / maxBpm) * 320 - 220
-                // Here, suddenBpm = actualSpeed, maxBpm = targetSpeed
                 const suddenValue = (1 - actualSpeed / targetSpeed) * 320 - 220;
 
-                // The SUDDEN value must be -200 or greater.
                 if (suddenValue >= -200) {
-                    // We found the solution!
-                    resultCell.textContent = `x${multiplier.toFixed(1)} (${Math.round(actualSpeed)}), ${suddenValue.toFixed(4)}`;
+                    // 1. Found the primary, recommended solution.
+                    const firstMultiplier = multiplier;
+                    const firstActualSpeed = actualSpeed;
+                    const firstSuddenValue = suddenValue;
+
+                    // 2. Calculate the next higher, non-recommended option.
+                    const nextMultiplier = parseFloat((firstMultiplier + 0.1).toFixed(1));
+                    const nextActualSpeed = mainBpm * nextMultiplier;
+                    const nextSuddenValue = (1 - nextActualSpeed / targetSpeed) * 320 - 220;
+
+                    // 3. Format both results using HTML for a line break.
+                    const firstResultString = `x${firstMultiplier.toFixed(1)} (${Math.round(firstActualSpeed)}), ${firstSuddenValue.toFixed(4)}`;
+                    const secondResultString = `x${nextMultiplier.toFixed(1)} (${Math.round(nextActualSpeed)}), ${nextSuddenValue.toFixed(4)}`;
+
+                    // Use .innerHTML to render the <br> tag
+                    resultCell.innerHTML = `${firstResultString}<br>${secondResultString}`;
+                    
                     return; // Exit the function
                 }
 
-                // If SUDDEN is too low, decrease the multiplier by 0.1 and try again.
                 multiplier = parseFloat((multiplier - 0.1).toFixed(1));
             }
             
-            // If the loop finishes without finding a solution
             resultCell.textContent = '적절한 값을 찾을 수 없습니다.';
             resultCell.style.color = 'red';
         }
@@ -571,11 +547,6 @@
                 }
             }
         });
-
-        // Add event listeners to the new inputs for Calculator 3
-        // This is an alternative to oninput, but oninput is already used, so we'll stick to that.
-        // document.getElementById('mainBpm3').addEventListener('input', calculateSudden3);
-        // document.getElementById('targetSpeed3').addEventListener('input', calculateSudden3);
 
     </script>
 
