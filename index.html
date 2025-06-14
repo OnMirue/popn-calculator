@@ -399,23 +399,23 @@
         </div>
          <div class="output-section">
              <div class="output-label-value-wrapper">
-                   <span class="output-label">계산 결과 (배속, SUDDEN)</span>
+                   <span class="output-label">계산 결과 (배속, SUDDEN, 실효속도)</span>
                    <div id="result3" class="output-value"></div>
              </div>
              <div class="output-toggle-details-wrapper">
                   <button type="button" class="toggle-details-btn" data-target="details-result3">결과 설명 보기 <span class="arrow">▼</span></button>
                   <div class="details output-details" id="details-result3">
                        <span class="notes-title">참고</span>
-                       <p>두 가지 결과를 표시합니다:<br>
+                       <p>두 가지 추천 설정을 표시하며, 각 설정마다 SUDDEN 수치를 적용했을 때의 '실효 속도'를 함께 보여줍니다.<br>
                        <b>상단:</b> SUDDEN 값이 -200 이상인 가장 가까운 추천 설정입니다.<br>
-                       <b>하단:</b> 그보다 한 단계 높은 배속의 참고용 설정입니다. 이 설정의 SUDDEN 값이 -200 미만일 경우, SUDDEN을 -200으로 설정했을 때의 '실효 속도'를 추가로 표시합니다.
+                       <b>하단:</b> 그보다 한 단계 높은 배속의 참고용 설정입니다. 이 설정의 SUDDEN 값이 -200 미만일 경우, '실효 속도'는 SUDDEN을 한계치인 -200으로 설정했을 때의 값입니다.
                        </p>
-                       <p>LIFT는 0 기준으로 계산됩니다.</p>
+                       <p>표시되는 SUDDEN 값은 반올림되며, LIFT는 0 기준으로 계산됩니다.</p>
                        <span class="example-title">사용예시</span>
                        <p><b>입력:</b> BPM 350, 원하는 속도 670<br>
                        <b>출력:</b><br>
-                       x1.7 (595), -184.1791<br>
-                       x1.8 (630), -203.8806, 실효속도 약 672
+                       x1.7 (595), -184, 약 670<br>
+                       x1.8 (630), -204, 약 672
                        </p>
                   </div>
              </div>
@@ -496,19 +496,28 @@
                     const firstActualSpeed = actualSpeed;
                     const firstSuddenValue = suddenValue;
 
+                    // Round SUDDEN and calculate its effective speed
+                    const roundedFirstSudden = Math.round(firstSuddenValue);
+                    const firstEffectiveSpeed = firstActualSpeed / (1 - (roundedFirstSudden + 220) / 320);
+                    const firstResultString = `x${firstMultiplier.toFixed(1)} (${Math.round(firstActualSpeed)}), ${roundedFirstSudden}, 약 ${Math.round(firstEffectiveSpeed)}`;
+
                     // 2. Calculate the next higher, non-recommended option.
                     const nextMultiplier = parseFloat((firstMultiplier + 0.1).toFixed(1));
                     const nextActualSpeed = mainBpm * nextMultiplier;
                     const nextSuddenValue = (1 - nextActualSpeed / targetSpeed) * 320 - 220;
 
-                    // 3. Format both results using HTML for a line break.
-                    const firstResultString = `x${firstMultiplier.toFixed(1)} (${Math.round(firstActualSpeed)}), ${firstSuddenValue.toFixed(4)}`;
-                    let secondResultString = `x${nextMultiplier.toFixed(1)} (${Math.round(nextActualSpeed)}), ${nextSuddenValue.toFixed(4)}`;
+                    // Round the second SUDDEN value
+                    const roundedNextSudden = Math.round(nextSuddenValue);
+                    let secondResultString = `x${nextMultiplier.toFixed(1)} (${Math.round(nextActualSpeed)}), ${roundedNextSudden}`;
                     
-                    // If the second option's SUDDEN is out of bounds, calculate the effective speed at the -200 limit.
+                    // If the second option's SUDDEN is out of bounds, calculate effective speed at the -200 limit.
+                    // Otherwise, calculate its normal effective speed.
                     if (nextSuddenValue < -200) {
                         const effectiveSpeedAtMinSudden = nextActualSpeed / (1 - (-200 + 220) / 320);
                         secondResultString += `, 실효속도 약 ${Math.round(effectiveSpeedAtMinSudden)}`;
+                    } else {
+                        const secondEffectiveSpeed = nextActualSpeed / (1 - (roundedNextSudden + 220) / 320);
+                        secondResultString += `, 실효속도 약 ${Math.round(secondEffectiveSpeed)}`;
                     }
 
                     // Use .innerHTML to render the <br> tag
