@@ -408,20 +408,19 @@
                        <span class="notes-title">참고</span>
                        <p>두 가지 결과를 표시합니다:<br>
                        <b>상단:</b> SUDDEN 값이 -200 이상인 가장 가까운 추천 설정입니다.<br>
-                       <b>하단:</b> 그보다 한 단계 높은 배속의 참고용 설정입니다.
+                       <b>하단:</b> 그보다 한 단계 높은 배속의 참고용 설정입니다. 이 설정의 SUDDEN 값이 -200 미만(사용 불가)일 경우, SUDDEN을 -200으로 설정했을 때의 '실효 속도'를 추가로 표시합니다.
                        </p>
                        <p>LIFT는 0 기준으로 계산됩니다.</p>
                        <span class="example-title">사용예시</span>
                        <p><b>입력:</b> BPM 350, 원하는 속도 670<br>
                        <b>출력:</b><br>
                        x1.7 (595), -184.1791<br>
-                       x1.8 (630), -203.8806
+                       x1.8 (630), -203.8806, 실효속도 약 672
                        </p>
                   </div>
              </div>
         </div>
     </div>
-    <!-- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ -->
 
     <script>
         // --- Calculation Functions ---
@@ -466,7 +465,7 @@
             resultCell.textContent = result.toFixed(4);
         }
 
-        // --- MODIFIED FUNCTION for Calculator 3 ---
+        // --- FUNCTION for Calculator 3 ---
         function calculateSudden3() {
             const mainBpm = parseFloat(document.getElementById('mainBpm3').value);
             const targetSpeed = parseFloat(document.getElementById('targetSpeed3').value);
@@ -504,7 +503,13 @@
 
                     // 3. Format both results using HTML for a line break.
                     const firstResultString = `x${firstMultiplier.toFixed(1)} (${Math.round(firstActualSpeed)}), ${firstSuddenValue.toFixed(4)}`;
-                    const secondResultString = `x${nextMultiplier.toFixed(1)} (${Math.round(nextActualSpeed)}), ${nextSuddenValue.toFixed(4)}`;
+                    let secondResultString = `x${nextMultiplier.toFixed(1)} (${Math.round(nextActualSpeed)}), ${nextSuddenValue.toFixed(4)}`;
+                    
+                    // If the second option's SUDDEN is out of bounds, calculate the effective speed at the -200 limit.
+                    if (nextSuddenValue < -200) {
+                        const effectiveSpeedAtMinSudden = nextActualSpeed / (1 - (-200 + 220) / 320);
+                        secondResultString += `, 실효속도 약 ${Math.round(effectiveSpeedAtMinSudden)}`;
+                    }
 
                     // Use .innerHTML to render the <br> tag
                     resultCell.innerHTML = `${firstResultString}<br>${secondResultString}`;
