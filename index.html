@@ -414,8 +414,8 @@
                        <span class="example-title">사용예시</span>
                        <p><b>입력:</b> BPM 350, 원하는 속도 670<br>
                        <b>출력:</b><br>
-                       x1.7 (595), -184, 약 670<br>
-                       x1.8 (630), -204, 약 672
+                       x1.7 (595), -184, 670<br>
+                       x1.8 (630), -204, 672
                        </p>
                   </div>
              </div>
@@ -499,7 +499,7 @@
                     // Round SUDDEN and calculate its effective speed
                     const roundedFirstSudden = Math.round(firstSuddenValue);
                     const firstEffectiveSpeed = firstActualSpeed / (1 - (roundedFirstSudden + 220) / 320);
-                    const firstResultString = `x${firstMultiplier.toFixed(1)} (${Math.round(firstActualSpeed)}), ${roundedFirstSudden}, 약 ${Math.round(firstEffectiveSpeed)}`;
+                    const firstResultString = `x${firstMultiplier.toFixed(1)} (${Math.round(firstActualSpeed)}), ${roundedFirstSudden}, ${Math.round(firstEffectiveSpeed)}`;
 
                     // 2. Calculate the next higher, non-recommended option.
                     const nextMultiplier = parseFloat((firstMultiplier + 0.1).toFixed(1));
@@ -514,10 +514,10 @@
                     // Otherwise, calculate its normal effective speed.
                     if (nextSuddenValue < -200) {
                         const effectiveSpeedAtMinSudden = nextActualSpeed / (1 - (-200 + 220) / 320);
-                        secondResultString += `, 약 ${Math.round(effectiveSpeedAtMinSudden)}`;
+                        secondResultString += `, ${Math.round(effectiveSpeedAtMinSudden)}`;
                     } else {
                         const secondEffectiveSpeed = nextActualSpeed / (1 - (roundedNextSudden + 220) / 320);
-                        secondResultString += `, 약 ${Math.round(secondEffectiveSpeed)}`;
+                        secondResultString += `, ${Math.round(secondEffectiveSpeed)}`;
                     }
 
                     // Use .innerHTML to render the <br> tag
