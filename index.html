@@ -514,10 +514,10 @@
                     // Otherwise, calculate its normal effective speed.
                     if (nextSuddenValue < -200) {
                         const effectiveSpeedAtMinSudden = nextActualSpeed / (1 - (-200 + 220) / 320);
-                        secondResultString += `, 실효속도 약 ${Math.round(effectiveSpeedAtMinSudden)}`;
+                        secondResultString += `, 약 ${Math.round(effectiveSpeedAtMinSudden)}`;
                     } else {
                         const secondEffectiveSpeed = nextActualSpeed / (1 - (roundedNextSudden + 220) / 320);
-                        secondResultString += `, 실효속도 약 ${Math.round(secondEffectiveSpeed)}`;
+                        secondResultString += `, 약 ${Math.round(secondEffectiveSpeed)}`;
                     }
 
                     // Use .innerHTML to render the <br> tag
