@@ -433,7 +433,8 @@
         <div class="overall-goal">
             <span class="example-title">참고/목표 예시</span>
             신기체의 최고 BPM, SUDDEN을 걸고자 하는 구간의 BPM을 바탕으로 SUDDEN 수치를 계산합니다.<br>
-            신기체의 SUDDEN 설정 가능 범위는 <b>-270 ~ 80</b>이며, -287이 SUDDEN OFF(아무것도 안 가림)에 해당합니다.
+            신기체의 SUDDEN 설정 가능 범위는 <b>-270 ~ 80</b>이며, -287이 SUDDEN OFF(아무것도 안 가림)에 해당합니다.<br><br>
+            ※ 리프트(LIFT)는 신기체에서 <b>0 ~ 200</b> 범위이며, 0이 OFF(아무것도 안 올림), 200이 최대로 올린 상태입니다.
         </div>
         <h3 class="section-title">입력 항목</h3>
         <div class="form-item">
@@ -515,7 +516,8 @@
         <h2 class="calc-title">서든 계산기 2 (신기체)</h2>
         <div class="overall-goal">
             <span class="example-title">참고/목표 예시</span>
-            LIFT 0일 때 사용하던 SUDDEN 수치를 기준으로, LIFT 값을 변경했을 때 적정 SUDDEN 수치를 계산합니다.
+            LIFT 0일 때 사용하던 SUDDEN 수치를 기준으로, LIFT 값을 변경했을 때 적정 SUDDEN 수치를 계산합니다.<br><br>
+            ※ 신기체 LIFT 범위: 0(OFF) ~ 200(최대)
         </div>
         <h3 class="section-title">입력 항목</h3>
         <div class="form-item">
@@ -739,7 +741,10 @@ function n_calc1() {
     if (isNaN(lift)) lift = 0;
     let roof = parseFloat(document.getElementById('n_roofValue1').value);
     if (isNaN(roof)) roof = 0;
-    const result = (1 - suddenBpm / maxBpm) * (390 - lift) + roof - 287;
+    // 루프가 roof/390 비율을 이미 가리고 있으므로
+    // 남은 화면(390-lift-roof) 중 BPM변속 비율만큼 서든이 추가로 가려야 함
+    // 총 단위 = (1 - low/high) * (390 - lift - roof) + roof
+    const result = (1 - suddenBpm / maxBpm) * (390 - lift - roof) + roof - 287;
     let text = result.toFixed(4);
     if (result < -270) text += ' ⚠️ 설정 가능 범위(-270) 초과';
     else if (result > 80) text += ' ⚠️ 설정 가능 최대값(80) 초과';
