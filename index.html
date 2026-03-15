@@ -1,25 +1,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <link rel="icon" type="image/png" href="/icon/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/icon/favicon.svg" />
-    <link rel="shortcut icon" href="/icon/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/icon/apple-touch-icon.png" />
-    <link rel="manifest" href="/icon/site.webmanifest" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:image" content="/icon/d.png">
-    <link rel="canonical" href="https://popn.kro.kr" />
-    <meta property="og:url" content="https://popn.kro.kr" />
-    <meta property="og:type" content="website" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-RHRBQ5GEP9"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-RHRBQ5GEP9');
-    </script>
-
     <title>팝픈뮤직 SUDDEN 수치 계산기</title>
     <style>
         body {
@@ -46,22 +29,19 @@
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
         }
+        .new-panel .calc-title { color: #007a5e; }
         .section-title {
-             font-size: 1.1em;
-             font-weight: bold;
-             margin-top: 25px;
-             margin-bottom: 15px;
-             color: #555;
+            font-size: 1.1em;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #555;
         }
         .form-item {
-            margin-bottom: 15px; /* Reduced margin as button adds space */
+            margin-bottom: 15px;
             padding-bottom: 15px;
             border-bottom: 1px solid #f0f0f0;
         }
-        .form-item:last-of-type {
-             border-bottom: none; /* Remove border for last item in section */
-        }
-
         .form-item label {
             display: block;
             font-weight: bold;
@@ -75,16 +55,55 @@
             border-radius: 4px;
             box-sizing: border-box;
             font-size: 1em;
-            margin-bottom: 10px; /* Space between input and toggle button */
+            margin-bottom: 10px;
+            color: #333;
         }
-        /* Input background colors */
         .input-yellow { background-color: #FFFFE0; }
         .input-blue   { background-color: #E6F0FF; }
         .input-orange { background-color: #FFF0E0; }
-        .input-green  { background-color: #E0FFE0; } /* New color for calc 3 */
-        .input-purple { background-color: #F0E6FF; } /* New color for calc 3 */
-
-        /* Toggle Button Styling */
+        .input-green  { background-color: #E0FFE0; }
+        .input-purple { background-color: #F0E6FF; }
+        .input-teal   { background-color: #E0F5F5; }
+        .input-pink   { background-color: #FFE6F0; }
+        /* Tab system */
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 20px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 5px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: transparent;
+            color: #666;
+            font-weight: bold;
+        }
+        .tab-btn.old.active {
+            background: #fff;
+            color: #0056b3;
+            border-color: #ccc;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tab-btn.new.active {
+            background: #fff;
+            color: #007a5e;
+            border-color: #ccc;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .tab-btn:not(.active):hover { background: #e8e8e8; color: #333; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+        /* Toggle Button */
         .toggle-details-btn {
             background-color: #f0f0f0;
             border: 1px solid #ccc;
@@ -93,53 +112,59 @@
             cursor: pointer;
             font-size: 0.85em;
             color: #333;
-            margin-bottom: 10px; /* Space below button */
-            display: inline-block; /* Fit content width */
+            margin-bottom: 10px;
+            display: inline-block;
+            font-family: inherit;
         }
-        .toggle-details-btn:hover {
-            background-color: #e0e0e0;
-        }
+        .toggle-details-btn:hover { background-color: #e0e0e0; }
         .toggle-details-btn .arrow {
             display: inline-block;
             margin-left: 5px;
             transition: transform 0.2s ease-in-out;
         }
-        .toggle-details-btn.active .arrow {
-             transform: rotate(180deg);
-        }
-
-
-        /* Details Section - Hidden by default */
+        .toggle-details-btn.active .arrow { transform: rotate(180deg); }
+        /* Details */
         .details {
             font-size: 0.9em;
             color: #555;
             background-color: #f8f8f8;
             padding: 12px;
             border-radius: 4px;
-            border: 1px solid #eee; /* Lighter border */
-            margin-top: 5px; /* Space above details when shown */
-            display: none; /* Hide by default */
+            border: 1px solid #eee;
+            margin-top: 5px;
+            display: none;
         }
         .details .notes-title,
         .details .example-title {
             font-weight: bold;
             display: block;
-            margin-bottom: 5px;
             color: #333;
-            font-size: 1.05em; /* Slightly larger title */
+            font-size: 1.05em;
             border-bottom: 1px solid #eee;
             padding-bottom: 3px;
             margin-bottom: 8px;
         }
-        .details p {
-            margin-top: 0;
-            margin-bottom: 8px;
+        .details p { margin-top: 0; margin-bottom: 8px; }
+        .details p:last-child { margin-bottom: 0; }
+        /* Overall goal box */
+        .overall-goal {
+            background-color: #eef;
+            border: 1px solid #ccf;
+            border-left: 4px solid #99f;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 0.9em;
+            color: #444;
+            line-height: 1.7;
         }
-        .details p:last-child {
-             margin-bottom: 0;
+        .overall-goal .example-title {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
         }
-
-        /* Output Section */
+        /* Output */
         .output-section {
             margin-top: 30px;
             padding-top: 20px;
@@ -160,408 +185,602 @@
             text-align: center;
             min-height: 30px;
             word-wrap: break-word;
-            margin-bottom: 10px; /* Space before output toggle */
+            margin-bottom: 10px;
         }
-        .output-details { /* Details specific to output */
-             margin-top: 5px; /* Align with other details */
-        }
-
-        /* Source Link Styling */
+        .output-value.error { color: red !important; background-color: #fff0f0 !important; }
+        /* Source link */
         .source-link {
-             text-align: center;
-             margin-top: 30px;
-             font-size: 0.9em;
-             color: #666;
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9em;
+            color: #666;
         }
-        .source-link a {
-            color: #0056b3;
-            text-decoration: none;
-        }
-        .source-link a:hover {
-            text-decoration: underline;
-        }
-
-
-        /* Responsive adjustments */
+        .source-link a { color: #0056b3; text-decoration: none; }
+        .source-link a:hover { text-decoration: underline; }
+        /* Responsive */
         @media (min-width: 768px) {
-             .form-item {
-                 display: flex;
-                 flex-wrap: wrap;
-                 align-items: flex-start;
-                 border-bottom: none; /* Remove border in flex layout */
-                 margin-bottom: 20px; /* Increase spacing */
-             }
-             .label-input-wrapper { /* Group label and input */
-                 width: 40%; /* Adjust as needed */
-                 padding-right: 20px;
-                 box-sizing: border-box;
-                 margin-bottom: 0; /* Reset margin */
-             }
-             .toggle-details-wrapper { /* Wrapper for button and details */
-                  flex: 1; /* Takes remaining space */
-                  min-width: 250px;
-             }
-             .form-item label {
-                 /* Already block, fine */
-             }
-             .form-item input[type="number"] {
-                  margin-bottom: 10px; /* Keep space before button */
-             }
-             .details {
-                margin-top: 5px;
-             }
-
-             .output-section {
-                  display: flex;
-                  flex-wrap: wrap;
-                  align-items: flex-start;
-             }
-             .output-label-value-wrapper {
-                  width: 40%; /* Adjust as needed */
-                  padding-right: 20px;
-                  box-sizing: border-box;
-             }
-             .output-label-wrapper {
-                 width: 100%; /* Take full width within its wrapper */
-             }
-             .output-value-wrapper {
-                 width: 100%;
-             }
-             .output-toggle-details-wrapper {
-                 flex: 1;
-                 min-width: 250px;
-             }
+            .form-item {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-start;
+                border-bottom: none;
+                margin-bottom: 20px;
+            }
+            .form-item > div:first-child {
+                width: 40%;
+                padding-right: 20px;
+                box-sizing: border-box;
+            }
+            .form-item > div:last-child { flex: 1; min-width: 250px; }
+            .output-section {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: flex-start;
+            }
+            .output-section > div:first-child {
+                width: 40%;
+                padding-right: 20px;
+                box-sizing: border-box;
+            }
+            .output-section > div:last-child { flex: 1; min-width: 250px; }
         }
-
     </style>
 </head>
 <body>
 
+<header>
+    <h1>팝픈뮤직 SUDDEN 수치 계산기</h1>
+    <p>구기체 · 신기체 대응</p>
+</header>
+
+<div class="tab-nav">
+    <button class="tab-btn old active" onclick="switchTab('old')">🎮 구기체</button>
+    <button class="tab-btn new" onclick="switchTab('new')">✨ 신기체</button>
+</div>
+
+<!-- ═══════════════ 구기체 탭 ═══════════════ -->
+<div class="tab-panel old-panel active" id="tab-old">
+
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 1</h2>
-        <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;">
-             <span class="example-title">참고/목표 예시</span>
-             <p>이 계산기는 최고 BPM, SUDDEN을 걸고자 하는 구간의 BPM, LIFT 수치를 바탕으로 SUDDEN 수치를 계산해 주는 계산기입니다. SUDDEN을 걸지 않았을 때와 노트가 화면에 나타나는 시간이 비슷하게 되도록 SUDDEN 수치를 구해줍니다. 하지만, 체감상 적정 SUDDEN 수치와 괴리가 있는 편이니 본래 사용하는 SUDDEN 수치가 있다면 밑의 계산기를 이용하는 것을 추천합니다.<br><br>LIFT 수치가 20일 때의 설상단화 EX의 SUDDEN 수치를 구하고자 합니다.</p>
+        <div class="overall-goal">
+            <span class="example-title">참고/목표 예시</span>
+            이 계산기는 최고 BPM, SUDDEN을 걸고자 하는 구간의 BPM, LIFT 수치를 바탕으로 SUDDEN 수치를 계산해 주는 계산기입니다. SUDDEN을 걸지 않았을 때와 노트가 화면에 나타나는 시간이 비슷하게 되도록 SUDDEN 수치를 구해줍니다. 하지만, 체감상 적정 SUDDEN 수치와 괴리가 있는 편이니 본래 사용하는 SUDDEN 수치가 있다면 밑의 계산기를 이용하는 것을 추천합니다.<br><br>
+            LIFT 수치가 20일 때의 설상단화 EX의 SUDDEN 수치를 구하고자 합니다.
         </div>
         <h3 class="section-title">입력 항목</h3>
         <div class="form-item">
-            <div class="label-input-wrapper">
+            <div>
                 <label for="maxBpm">해당 곡의 최고 BPM</label>
                 <input type="number" id="maxBpm" class="input-yellow" oninput="calculateSudden1()">
             </div>
-            <div class="toggle-details-wrapper">
+            <div>
                 <button type="button" class="toggle-details-btn" data-target="details-maxBpm">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-maxBpm">
                     <span class="notes-title">참고</span>
                     <p>해당 곡의 최고 BPM 혹은 SUDDEN을 걸지 않을 구간의 BPM을 입력합니다. 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
                     <span class="example-title">사용예시</span>
-                    <p>설상단화의 최고 BPM은 180이므로 180을 입력합니다(혹은, 720 배속을 보는 유저라면 720을 입력해도 무관합니다. 단, 이 경우에는 밑의 항목에도 배속을 입력해야 합니다.)</p>
+                    <p>설상단화의 최고 BPM은 180이므로 180을 입력합니다.</p>
                 </div>
             </div>
         </div>
         <div class="form-item">
-            <div class="label-input-wrapper">
+            <div>
                 <label for="suddenBpm">SUDDEN을 걸고자 하는 구간의 BPM</label>
                 <input type="number" id="suddenBpm" class="input-blue" oninput="calculateSudden1()">
             </div>
-             <div class="toggle-details-wrapper">
+            <div>
                 <button type="button" class="toggle-details-btn" data-target="details-suddenBpm">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-suddenBpm">
                     <span class="notes-title">참고</span>
-                    <p>SUDDEN을 걸고자 하는 구간의 BPM을 입력합니다(대부분의 경우 최저 BPM). 이 항목에 해당 곡의 배속을 입력해도 무관하나, 이 항목에 BPM 대신 배속을 입력했다면 밑의 항목에도 배속을 입력해야 합니다.</p>
+                    <p>SUDDEN을 걸고자 하는 구간의 BPM을 입력합니다(대부분의 경우 최저 BPM).</p>
                     <span class="example-title">사용예시</span>
-                    <p>설상단화의 저속 구간의 BPM은 105이므로 105를 입력합니다(위에서 720을 입력했다면 이 항목에 105 대신 420을 입력해야 합니다).</p>
+                    <p>설상단화의 저속 구간의 BPM은 105이므로 105를 입력합니다.</p>
                 </div>
             </div>
         </div>
         <div class="form-item">
-             <div class="label-input-wrapper">
+            <div>
                 <label for="liftValue1">LIFT 수치</label>
                 <input type="number" id="liftValue1" class="input-orange" oninput="calculateSudden1()">
             </div>
-            <div class="toggle-details-wrapper">
+            <div>
                 <button type="button" class="toggle-details-btn" data-target="details-liftValue1">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-liftValue1">
-                     <span class="notes-title">참고</span>
-                     <p>LIFT 수치를 입력합니다. 입력하지 않으면 LIFT 0으로 간주하여 계산합니다.</p>
-                     <span class="example-title">사용예시</span>
-                     <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
+                    <span class="notes-title">참고</span>
+                    <p>LIFT 수치를 입력합니다. 입력하지 않으면 LIFT 0으로 간주하여 계산합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
                 </div>
             </div>
         </div>
         <div class="output-section">
-             <div class="output-label-value-wrapper">
-                  <span class="output-label">적정 SUDDEN 수치</span>
-                  <div id="result1" class="output-value"></div>
-             </div>
-             <div class="output-toggle-details-wrapper">
-                  <button type="button" class="toggle-details-btn" data-target="details-result1">결과 설명 보기 <span class="arrow">▼</span></button>
-                  <div class="details output-details" id="details-result1">
-                       <span class="notes-title">참고</span>
-                       <p>BPM과 LIFT 수치(입력 시)를 이용하여 계산한 결과입니다.</p>
-                       <span class="example-title">사용예시</span>
-                       <p>계산 결과로 -95가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -95에 맞추고 게임을 플레이하면 됩니다.</p>
-                  </div>
+            <div>
+                <span class="output-label">적정 SUDDEN 수치</span>
+                <div id="result1" class="output-value"></div>
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="details-result1">결과 설명 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="details-result1">
+                    <span class="notes-title">참고</span>
+                    <p>BPM과 LIFT 수치(입력 시)를 이용하여 계산한 결과입니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>계산 결과로 -95가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -95에 맞추고 게임을 플레이하면 됩니다.</p>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 2</h2>
-         <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;">
-             <span class="example-title">참고/목표 예시</span>
-             <p>이 계산기는 LIFT 수치가 0일 때(LIFT 옵션이 OFF일 때)의 SUDDEN 수치, 현재 사용중인 LIFT 수치를 바탕으로 적정 SUDDEN 수치를 계산해 주는 계산기입니다. <br><br>LIFT를 사용하지 않았을 때 설상단화 EX의 SUDDEN 수치를 -95로 맞추고 플레이하는 유저가 LIFT 수치가 20일 때의 설상단화 EX의 SUDDEN 수치를 구하고자 합니다.</p>
+        <div class="overall-goal">
+            <span class="example-title">참고/목표 예시</span>
+            이 계산기는 LIFT 수치가 0일 때(LIFT 옵션이 OFF일 때)의 SUDDEN 수치, 현재 사용중인 LIFT 수치를 바탕으로 적정 SUDDEN 수치를 계산해 주는 계산기입니다.<br><br>
+            LIFT를 사용하지 않았을 때 설상단화 EX의 SUDDEN 수치를 -95로 맞추고 플레이하는 유저가 LIFT 수치가 20일 때의 설상단화 EX의 SUDDEN 수치를 구하고자 합니다.
         </div>
         <h3 class="section-title">입력 항목</h3>
         <div class="form-item">
-            <div class="label-input-wrapper">
+            <div>
                 <label for="suddenAtLift0">LIFT 수치가 0일 때 사용했던 SUDDEN 수치</label>
                 <input type="number" id="suddenAtLift0" class="input-yellow" oninput="calculateSudden2()">
-             </div>
-            <div class="toggle-details-wrapper">
+            </div>
+            <div>
                 <button type="button" class="toggle-details-btn" data-target="details-suddenAtLift0">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-suddenAtLift0">
-                     <span class="notes-title">참고</span>
-                     <p>LIFT 수치가 0일 때 사용했던 SUDDEN 수치를 입력합니다. 이때, 항상 음수값만을 입력해야 합니다.</p>
-                     <span class="example-title">사용예시</span>
-                     <p>LIFT를 사용하지 않았을 때의 SUDDEN 수치가 -95였으므로, -95를 입력합니다.</p>
+                    <span class="notes-title">참고</span>
+                    <p>LIFT 수치가 0일 때 사용했던 SUDDEN 수치를 입력합니다. 항상 음수값만을 입력해야 합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>LIFT를 사용하지 않았을 때의 SUDDEN 수치가 -95였으므로, -95를 입력합니다.</p>
                 </div>
             </div>
         </div>
         <div class="form-item">
-            <div class="label-input-wrapper">
+            <div>
                 <label for="liftValue2">사용하고 있는 LIFT 수치</label>
                 <input type="number" id="liftValue2" class="input-blue" oninput="calculateSudden2()">
             </div>
-            <div class="toggle-details-wrapper">
+            <div>
                 <button type="button" class="toggle-details-btn" data-target="details-liftValue2">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-liftValue2">
-                     <span class="notes-title">참고</span>
-                     <p>현재 사용중인 LIFT 수치를 입력합니다.</p>
-                     <span class="example-title">사용예시</span>
-                     <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
+                    <span class="notes-title">참고</span>
+                    <p>현재 사용중인 LIFT 수치를 입력합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>LIFT 수치가 20이므로, 20을 입력합니다.</p>
                 </div>
             </div>
         </div>
-         <div class="output-section">
-             <div class="output-label-value-wrapper">
-                   <span class="output-label">적정 SUDDEN 수치</span>
-                   <div id="result2" class="output-value"></div>
-             </div>
-             <div class="output-toggle-details-wrapper">
-                  <button type="button" class="toggle-details-btn" data-target="details-result2">결과 설명 보기 <span class="arrow">▼</span></button>
-                  <div class="details output-details" id="details-result2">
-                       <span class="notes-title">참고</span>
-                       <p>LIFT 0일 때의 SUDDEN 수치를 이용하여 계산한 결과입니다.</p>
-                       <span class="example-title">사용예시</span>
-                       <p>계산 결과로 -102.8125가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -103으로 맞추고 게임을 플레이하면 됩니다.</p>
-                  </div>
-             </div>
+        <div class="output-section">
+            <div>
+                <span class="output-label">적정 SUDDEN 수치</span>
+                <div id="result2" class="output-value"></div>
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="details-result2">결과 설명 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="details-result2">
+                    <span class="notes-title">참고</span>
+                    <p>LIFT 0일 때의 SUDDEN 수치를 이용하여 계산한 결과입니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>계산 결과로 -102.8125가 나왔다면 올바르게 사용한 것입니다. SUDDEN 수치를 -103으로 맞추고 게임을 플레이하면 됩니다.</p>
+                </div>
+            </div>
         </div>
     </div>
+
     <div class="calculator">
         <h2 class="calc-title">서든 계산기 3</h2>
-        <div class="overall-goal details" style="background-color: #eef; border-left-color: #99f; margin-bottom: 20px; display: block;">
-             <span class="example-title">참고/목표 예시</span>
-             <p>이 계산기는 원하는 속도를 설정할 수 없을 때, 배속과 SUDDEN 값을 조합하여 원하는 속도를 맞추기 위한 최적의 값을 찾아줍니다.<br><br>
-                예를 들어 BPM 200인 곡에서 속도 670을 맞추고 싶지만, 인게임 설정은 660, 680만 가능할 때 이 계산기를 사용합니다. 계산기는 SUDDEN 최소값을 넘지 않는 가장 가까운 설정과 그보다 한 단계 높은 배속의 설정을 함께 찾아줍니다.</p>
+        <div class="overall-goal">
+            <span class="example-title">참고/목표 예시</span>
+            이 계산기는 원하는 속도를 설정할 수 없을 때, 배속과 SUDDEN 값을 조합하여 원하는 속도를 맞추기 위한 최적의 값을 찾아줍니다.<br><br>
+            예를 들어 BPM 200인 곡에서 속도 670을 맞추고 싶지만, 인게임 설정은 660, 680만 가능할 때 이 계산기를 사용합니다.
         </div>
         <h3 class="section-title">입력 항목</h3>
         <div class="form-item">
-            <div class="label-input-wrapper">
+            <div>
                 <label for="mainBpm3">곡의 BPM</label>
                 <input type="number" id="mainBpm3" class="input-green" oninput="calculateSudden3()">
-             </div>
-            <div class="toggle-details-wrapper">
+            </div>
+            <div>
                 <button type="button" class="toggle-details-btn" data-target="details-mainBpm3">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-mainBpm3">
-                     <span class="notes-title">참고</span>
-                     <p>기준이 되는 곡의 BPM을 입력합니다. 변속곡의 경우 주가 되는 BPM을 입력하세요.</p>
-                     <span class="example-title">사용예시</span>
-                     <p>BPM 200인 곡의 경우, 200을 입력합니다.</p>
+                    <span class="notes-title">참고</span>
+                    <p>기준이 되는 곡의 BPM을 입력합니다. 변속곡의 경우 주가 되는 BPM을 입력하세요.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>BPM 200인 곡의 경우, 200을 입력합니다.</p>
                 </div>
             </div>
         </div>
         <div class="form-item">
-            <div class="label-input-wrapper">
+            <div>
                 <label for="targetSpeed3">원하는 속도</label>
                 <input type="number" id="targetSpeed3" class="input-purple" oninput="calculateSudden3()">
             </div>
-            <div class="toggle-details-wrapper">
+            <div>
                 <button type="button" class="toggle-details-btn" data-target="details-targetSpeed3">참고/예시 보기 <span class="arrow">▼</span></button>
                 <div class="details" id="details-targetSpeed3">
-                     <span class="notes-title">참고</span>
-                     <p>최종적으로 맞추고 싶은 노트의 스크롤 속도를 입력합니다.</p>
-                     <span class="example-title">사용예시</span>
-                     <p>평소 670 정도의 속도로 플레이한다면, 670을 입력합니다.</p>
+                    <span class="notes-title">참고</span>
+                    <p>최종적으로 맞추고 싶은 노트의 스크롤 속도를 입력합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>평소 670 정도의 속도로 플레이한다면, 670을 입력합니다.</p>
                 </div>
             </div>
         </div>
-         <div class="output-section">
-             <div class="output-label-value-wrapper">
-                   <span class="output-label">계산 결과 (배속, SUDDEN, 체감속도)</span>
-                   <div id="result3" class="output-value"></div>
-             </div>
-             <div class="output-toggle-details-wrapper">
-                  <button type="button" class="toggle-details-btn" data-target="details-result3">결과 설명 보기 <span class="arrow">▼</span></button>
-                  <div class="details output-details" id="details-result3">
-                       <span class="notes-title">참고</span>
-                       <p>두 가지 추천 설정을 표시하며, 각 설정마다 SUDDEN 수치를 적용했을 때의 '체감 속도'를 함께 보여줍니다.<br>
-                       <b>상단:</b> SUDDEN 값이 -200 이상인 가장 가까운 추천 설정입니다.<br>
-                       <b>하단:</b> 그보다 한 단계 높은 배속의 참고용 설정입니다. '체감 속도'는 SUDDEN을 한계치인 -200으로 설정했을 때의 값입니다.
-                       </p>
-                       <p>표시되는 SUDDEN 값은 반올림되며, LIFT는 0 기준으로 계산됩니다.</p>
-                       <span class="example-title">사용예시</span>
-                       <p><b>입력:</b> BPM 350, 원하는 속도 670<br>
-                       <b>출력:</b><br>
-                       x1.7 (595), -184, 670<br>
-                       x1.8 (630), -204, 672
-                       </p>
-                  </div>
-             </div>
+        <div class="output-section">
+            <div>
+                <span class="output-label">계산 결과 (배속, SUDDEN, 체감속도)</span>
+                <div id="result3" class="output-value"></div>
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="details-result3">결과 설명 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="details-result3">
+                    <span class="notes-title">참고</span>
+                    <p>두 가지 추천 설정을 표시하며, 각 설정마다 SUDDEN 수치를 적용했을 때의 '체감 속도'를 함께 보여줍니다.<br>
+                    <b>상단:</b> SUDDEN 값이 -200 이상인 가장 가까운 추천 설정입니다.<br>
+                    <b>하단:</b> 그보다 한 단계 높은 배속의 참고용 설정입니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p><b>입력:</b> BPM 350, 원하는 속도 670<br>
+                    <b>출력:</b> x1.7 (595), -184, 670 / x1.8 (630), -204, 672</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════ 신기체 탭 ═══════════════ -->
+<div class="tab-panel new-panel" id="tab-new">
+
+    <div class="calculator">
+        <h2 class="calc-title">서든 계산기 1 (신기체)</h2>
+        <div class="overall-goal">
+            <span class="example-title">참고/목표 예시</span>
+            신기체의 최고 BPM, SUDDEN을 걸고자 하는 구간의 BPM을 바탕으로 SUDDEN 수치를 계산합니다.<br>
+            신기체의 SUDDEN 설정 가능 범위는 <b>-270 ~ 80</b>이며, -287이 SUDDEN OFF(아무것도 안 가림)에 해당합니다.<br><br>
+            ※ 리프트(LIFT)는 신기체에서 <b>0 ~ 200</b> 범위이며, 0이 OFF(아무것도 안 올림), 200이 최대로 올린 상태입니다.
+        </div>
+        <h3 class="section-title">입력 항목</h3>
+        <div class="form-item">
+            <div>
+                <label for="n_maxBpm">해당 곡의 최고 BPM</label>
+                <input type="number" id="n_maxBpm" class="input-yellow" oninput="n_calc1()">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-maxBpm">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-maxBpm">
+                    <span class="notes-title">참고</span>
+                    <p>해당 곡의 최고 BPM 혹은 SUDDEN을 걸지 않을 구간의 BPM을 입력합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>최고 BPM이 180인 곡이라면 180을 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <div>
+                <label for="n_suddenBpm">SUDDEN을 걸고자 하는 구간의 BPM</label>
+                <input type="number" id="n_suddenBpm" class="input-blue" oninput="n_calc1()">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-suddenBpm">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-suddenBpm">
+                    <span class="notes-title">참고</span>
+                    <p>SUDDEN을 걸고자 하는 구간의 BPM(대부분의 경우 최저 BPM)을 입력합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>저속 구간의 BPM이 105라면 105를 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <div>
+                <label for="n_liftValue1">LIFT 수치 (0 = OFF, 200 = 최대)</label>
+                <input type="number" id="n_liftValue1" class="input-orange" oninput="n_calc1()" placeholder="입력 없으면 0으로 계산">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-liftValue1">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-liftValue1">
+                    <span class="notes-title">참고</span>
+                    <p>신기체 LIFT 수치를 입력합니다. 범위: 0(OFF) ~ 200(최대). 입력하지 않으면 0으로 계산합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>LIFT를 50으로 설정 중이라면 50을 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="output-section">
+            <div>
+                <span class="output-label">적정 SUDDEN 수치</span>
+                <div id="n_result1" class="output-value"></div>
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-result1">결과 설명 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-result1">
+                    <span class="notes-title">참고</span>
+                    <p>신기체 기준으로 계산된 결과입니다. 결과값이 -270보다 작으면 설정 가능한 최솟값(-270) 이하임을 경고합니다.</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // --- Calculation Functions ---
-        function calculateSudden1() {
-            const maxBpm = parseFloat(document.getElementById('maxBpm').value);
-            const suddenBpm = parseFloat(document.getElementById('suddenBpm').value);
-            let liftValue1 = parseFloat(document.getElementById('liftValue1').value);
-            const resultCell = document.getElementById('result1');
-
-            resultCell.textContent = '';
-            resultCell.style.color = '#007bff';
-
-            if (isNaN(maxBpm) || isNaN(suddenBpm)) {
-                return;
-            }
-
-            if (maxBpm === 0) {
-                resultCell.textContent = '#DIV/0!';
-                resultCell.style.color = 'red';
-                return;
-            }
-            
-            if (isNaN(liftValue1)) {
-                liftValue1 = 0;
-            }
-            const result = (1 - suddenBpm / maxBpm) * (320 - liftValue1) - 220;
-            resultCell.textContent = result.toFixed(4);
-        }
-
-        function calculateSudden2() {
-            const suddenAtLift0 = parseFloat(document.getElementById('suddenAtLift0').value);
-            const liftValue2 = parseFloat(document.getElementById('liftValue2').value);
-            const resultCell = document.getElementById('result2');
-
-             resultCell.textContent = '';
-             resultCell.style.color = '#007bff';
-
-             if (isNaN(suddenAtLift0) || isNaN(liftValue2)) {
-                return;
-            }
-            const result = (suddenAtLift0 + 220) * (320 - liftValue2) / 320 - 220;
-            resultCell.textContent = result.toFixed(4);
-        }
-
-        // --- FUNCTION for Calculator 3 ---
-        function calculateSudden3() {
-            const mainBpm = parseFloat(document.getElementById('mainBpm3').value);
-            const targetSpeed = parseFloat(document.getElementById('targetSpeed3').value);
-            const resultCell = document.getElementById('result3');
-
-            resultCell.innerHTML = ''; // Use innerHTML to allow <br> tags
-            resultCell.style.color = '#007bff';
-
-            if (isNaN(mainBpm) || isNaN(targetSpeed) || mainBpm <= 0 || targetSpeed <= 0) {
-                return;
-            }
-
-            let multiplier = Math.floor((targetSpeed / mainBpm) * 10) / 10;
-            
-            for (let i = 0; i < 100; i++) {
-                if (multiplier <= 0) {
-                    resultCell.textContent = '적절한 값을 찾을 수 없습니다.';
-                    resultCell.style.color = 'red';
-                    return;
-                }
-
-                const actualSpeed = mainBpm * multiplier;
-                const suddenValue = (1 - actualSpeed / targetSpeed) * 320 - 220;
-
-                if (suddenValue >= -200) {
-                    // 1. Found the primary, recommended solution.
-                    const firstMultiplier = multiplier;
-                    const firstActualSpeed = actualSpeed;
-                    const firstSuddenValue = suddenValue;
-
-                    // Round SUDDEN and calculate its effective speed
-                    const roundedFirstSudden = Math.round(firstSuddenValue);
-                    const firstEffectiveSpeed = firstActualSpeed / (1 - (roundedFirstSudden + 220) / 320);
-                    const firstResultString = `x${firstMultiplier.toFixed(1)} (${Math.round(firstActualSpeed)}), ${roundedFirstSudden}, ${Math.round(firstEffectiveSpeed)}`;
-
-                    // 2. Calculate the next higher, non-recommended option.
-                    const nextMultiplier = parseFloat((firstMultiplier + 0.1).toFixed(1));
-                    const nextActualSpeed = mainBpm * nextMultiplier;
-                    const nextSuddenValue = (1 - nextActualSpeed / targetSpeed) * 320 - 220;
-
-                    // Round the second SUDDEN value
-                    const roundedNextSudden = Math.round(nextSuddenValue);
-                    let secondResultString = `x${nextMultiplier.toFixed(1)} (${Math.round(nextActualSpeed)}), ${roundedNextSudden}`;
-                    
-                    // If the second option's SUDDEN is out of bounds, calculate effective speed at the -200 limit.
-                    // Otherwise, calculate its normal effective speed.
-                    if (nextSuddenValue < -200) {
-                        const effectiveSpeedAtMinSudden = nextActualSpeed / (1 - (-200 + 220) / 320);
-                        secondResultString += `, ${Math.round(effectiveSpeedAtMinSudden)}`;
-                    } else {
-                        const secondEffectiveSpeed = nextActualSpeed / (1 - (roundedNextSudden + 220) / 320);
-                        secondResultString += `, ${Math.round(secondEffectiveSpeed)}`;
-                    }
-
-                    // Use .innerHTML to render the <br> tag
-                    resultCell.innerHTML = `${firstResultString}<br>${secondResultString}`;
-                    
-                    return; // Exit the function
-                }
-
-                multiplier = parseFloat((multiplier - 0.1).toFixed(1));
-            }
-            
-            resultCell.textContent = '적절한 값을 찾을 수 없습니다.';
-            resultCell.style.color = 'red';
-        }
-
-
-        // --- Toggle Details Functionality ---
-        document.addEventListener('click', function(event) {
-            const button = event.target.closest('.toggle-details-btn');
-            if (!button) return;
-
-            const targetId = button.getAttribute('data-target');
-            const targetElement = document.getElementById(targetId);
-            const arrow = button.querySelector('.arrow');
-
-            if (targetElement) {
-                const isHidden = targetElement.style.display === 'none' || targetElement.style.display === '';
-                if (isHidden) {
-                    targetElement.style.display = 'block';
-                    button.classList.add('active');
-                    arrow.textContent = '▲';
-                } else {
-                    targetElement.style.display = 'none';
-                    button.classList.remove('active');
-                    arrow.textContent = '▼';
-                }
-            }
-        });
-
-    </script>
-
-    <div class="source-link">
-        <p>출처: <a href="https://gall.dcinside.com/m/popn/238266" target="_blank" rel="noopener noreferrer">https://gall.dcinside.com/m/popn/238266</a><br>This site is an unofficial fan project and is not affiliated with or endorsed by KONAMI. All trademarks and copyrights belong to their respective owners.</p>
+    <div class="calculator">
+        <h2 class="calc-title">서든 계산기 2 (신기체)</h2>
+        <div class="overall-goal">
+            <span class="example-title">참고/목표 예시</span>
+            LIFT 0일 때 사용하던 SUDDEN 수치를 기준으로, LIFT 값을 변경했을 때 적정 SUDDEN 수치를 계산합니다.<br><br>
+            ※ 신기체 LIFT 범위: 0(OFF) ~ 200(최대)
+        </div>
+        <h3 class="section-title">입력 항목</h3>
+        <div class="form-item">
+            <div>
+                <label for="n_suddenAtLift0">LIFT 0일 때 사용하던 SUDDEN 수치</label>
+                <input type="number" id="n_suddenAtLift0" class="input-yellow" oninput="n_calc2()">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-suddenAtLift0">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-suddenAtLift0">
+                    <span class="notes-title">참고</span>
+                    <p>LIFT가 0(OFF)일 때 사용하던 SUDDEN 수치를 입력합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>LIFT OFF일 때 SUDDEN을 -60으로 설정하고 플레이했다면 -60을 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <div>
+                <label for="n_liftValue2">사용하고 있는 LIFT 수치 (0 ~ 200)</label>
+                <input type="number" id="n_liftValue2" class="input-blue" oninput="n_calc2()">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-liftValue2">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-liftValue2">
+                    <span class="notes-title">참고</span>
+                    <p>현재 사용 중인 LIFT 수치를 입력합니다. 0(OFF) ~ 200(최대) 범위입니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>LIFT를 50으로 설정 중이라면 50을 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="output-section">
+            <div>
+                <span class="output-label">적정 SUDDEN 수치</span>
+                <div id="n_result2" class="output-value"></div>
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-result2">결과 설명 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-result2">
+                    <span class="notes-title">참고</span>
+                    <p>LIFT 변경에 따른 보정된 SUDDEN 수치입니다.</p>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="calculator">
+        <h2 class="calc-title">서든 계산기 3 — ROOF 출력</h2>
+        <div class="overall-goal">
+            <span class="example-title">참고/목표 예시</span>
+            이 계산기는 원하는 속도를 설정할 수 없을 때, 배속과 ROOF 값을 조합하여 원하는 속도를 맞추기 위한 최적의 값을 찾아줍니다.<br><br>
+            예를 들어 BPM 200인 곡에서 속도 670을 맞추고 싶지만, 인게임 설정은 660, 680만 가능할 때 이 계산기를 사용합니다.
+        </div>
+        <h3 class="section-title">입력 항목</h3>
+        <div class="form-item">
+            <div>
+                <label for="n_mainBpm3">곡의 BPM</label>
+                <input type="number" id="n_mainBpm3" class="input-green" oninput="n_calc3()">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-mainBpm3">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-mainBpm3">
+                    <span class="notes-title">참고</span>
+                    <p>기준이 되는 곡의 BPM을 입력합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>BPM 200인 곡이라면 200을 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <div>
+                <label for="n_targetSpeed3">원하는 속도</label>
+                <input type="number" id="n_targetSpeed3" class="input-purple" oninput="n_calc3()">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-targetSpeed3">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-targetSpeed3">
+                    <span class="notes-title">참고</span>
+                    <p>최종적으로 맞추고 싶은 노트의 스크롤 속도를 입력합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>평소 670 정도의 속도로 플레이한다면, 670을 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="output-section">
+            <div>
+                <span class="output-label">계산 결과 (배속, ROOF, 체감속도)</span>
+                <div id="n_result3" class="output-value"></div>
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-result3">결과 설명 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-result3">
+                    <span class="notes-title">참고</span>
+                    <p>배속과 ROOF를 조합했을 때의 체감 속도를 함께 보여줍니다. ROOF 값이 0 이상인 가장 가까운 추천 설정입니다.</p>
+                    <p>표시되는 ROOF 값은 반올림됩니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p><b>입력:</b> BPM 200, 원하는 속도 670<br>
+                    <b>출력:</b> x3.3 (660), ROOF 6, 670</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="source-link">
+    <p>출처: <a href="https://gall.dcinside.com/m/popn/238266" target="_blank" rel="noopener noreferrer">https://gall.dcinside.com/m/popn/238266</a><br>
+    This site is an unofficial fan project and is not affiliated with or endorsed by KONAMI. All trademarks and copyrights belong to their respective owners.</p>
+</div>
+
+<script>
+// ─── 탭 전환 ───────────────────────────────────────────────
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.tab-btn.${tab}`).classList.add('active');
+    document.getElementById(`tab-${tab}`).classList.add('active');
+}
+
+// ─── 구기체 계산기 (원본 그대로) ───────────────────────────
+function calculateSudden1() {
+    const maxBpm = parseFloat(document.getElementById('maxBpm').value);
+    const suddenBpm = parseFloat(document.getElementById('suddenBpm').value);
+    let liftValue1 = parseFloat(document.getElementById('liftValue1').value);
+    const resultCell = document.getElementById('result1');
+    resultCell.textContent = '';
+    resultCell.classList.remove('error');
+    if (isNaN(maxBpm) || isNaN(suddenBpm)) return;
+    if (maxBpm === 0) { resultCell.textContent = '#DIV/0!'; resultCell.classList.add('error'); return; }
+    if (isNaN(liftValue1)) liftValue1 = 0;
+    const result = (1 - suddenBpm / maxBpm) * (320 - liftValue1) - 220;
+    resultCell.textContent = result.toFixed(4);
+}
+
+function calculateSudden2() {
+    const suddenAtLift0 = parseFloat(document.getElementById('suddenAtLift0').value);
+    const liftValue2 = parseFloat(document.getElementById('liftValue2').value);
+    const resultCell = document.getElementById('result2');
+    resultCell.textContent = '';
+    resultCell.classList.remove('error');
+    if (isNaN(suddenAtLift0) || isNaN(liftValue2)) return;
+    const result = (suddenAtLift0 + 220) * (320 - liftValue2) / 320 - 220;
+    resultCell.textContent = result.toFixed(4);
+}
+
+function calculateSudden3() {
+    const mainBpm = parseFloat(document.getElementById('mainBpm3').value);
+    const targetSpeed = parseFloat(document.getElementById('targetSpeed3').value);
+    const resultCell = document.getElementById('result3');
+    resultCell.innerHTML = '';
+    resultCell.classList.remove('error');
+    if (isNaN(mainBpm) || isNaN(targetSpeed) || mainBpm <= 0 || targetSpeed <= 0) return;
+
+    let multiplier = Math.floor((targetSpeed / mainBpm) * 10) / 10;
+    for (let i = 0; i < 100; i++) {
+        if (multiplier <= 0) { resultCell.textContent = '적절한 값을 찾을 수 없습니다.'; resultCell.classList.add('error'); return; }
+        const actualSpeed = mainBpm * multiplier;
+        const suddenValue = (1 - actualSpeed / targetSpeed) * 320 - 220;
+        if (suddenValue >= -200) {
+            const roundedSudden = Math.round(suddenValue);
+            const effectiveSpeed = actualSpeed / (1 - (roundedSudden + 220) / 320);
+            const firstStr = `x${multiplier.toFixed(1)} (${Math.round(actualSpeed)}), ${roundedSudden}, ${Math.round(effectiveSpeed)}`;
+
+            const nextMult = parseFloat((multiplier + 0.1).toFixed(1));
+            const nextActual = mainBpm * nextMult;
+            const nextSudden = (1 - nextActual / targetSpeed) * 320 - 220;
+            const roundedNext = Math.round(nextSudden);
+            let secondStr = `x${nextMult.toFixed(1)} (${Math.round(nextActual)}), ${roundedNext}`;
+            if (nextSudden < -200) {
+                secondStr += `, ${Math.round(nextActual / (1 - (-200 + 220) / 320))}`;
+            } else {
+                secondStr += `, ${Math.round(nextActual / (1 - (roundedNext + 220) / 320))}`;
+            }
+            resultCell.innerHTML = `${firstStr}<br>${secondStr}`;
+            return;
+        }
+        multiplier = parseFloat((multiplier - 0.1).toFixed(1));
+    }
+    resultCell.textContent = '적절한 값을 찾을 수 없습니다.';
+    resultCell.classList.add('error');
+}
+
+// ─── 신기체 스케일 ─────────────────────────────────────────
+// ROOF/서든/리프트 모두 1단위가 동일
+// ROOF: 0(0% 가림) ~ 390(100% 가림), 총 390단위 = 화면 전체
+// 서든: -287(ROOF0 상당, 0% 가림) ~ 80(ROOF367 상당, 94.1% 가림)
+//        서든 S의 ROOF 환산 = S + 287
+//        서든 -270 = ROOF 17 → (-270+287)=17 ✅
+// 리프트: 0(OFF) ~ 200(최대), 리프트 L의 ROOF 환산 = L
+//         리프트가 |L|만큼 아래에서 올리면, 서든이 가릴 수 있는 공간 = 390 - |L|
+
+// 신기체 계산기 1 — BPM 기반 서든 계산
+// 개념: BPM이 high→low로 변할 때 노트가 느려지는 비율 = (1 - low/high)
+//       이 비율을 가려야 구간 체감이 동일해짐
+//       가려야 할 단위 수 = (1 - low/high) * (390 - lift)
+//       서든 S = 가려야 할 단위 수 - 287
+function n_calc1() {
+    const maxBpm = parseFloat(document.getElementById('n_maxBpm').value);
+    const suddenBpm = parseFloat(document.getElementById('n_suddenBpm').value);
+    let lift = parseFloat(document.getElementById('n_liftValue1').value);
+    const el = document.getElementById('n_result1');
+    el.textContent = ''; el.classList.remove('error');
+    if (isNaN(maxBpm) || isNaN(suddenBpm)) return;
+    if (maxBpm === 0) { el.textContent = '#DIV/0!'; el.classList.add('error'); return; }
+    if (isNaN(lift)) lift = 0;
+    const result = (1 - suddenBpm / maxBpm) * (390 - lift) - 287;
+    let text = result.toFixed(4);
+    if (result < -270) text += ' ⚠️ 설정 가능 범위(-270) 초과';
+    else if (result > 80) text += ' ⚠️ 설정 가능 최대값(80) 초과';
+    el.textContent = text;
+}
+
+// 신기체 계산기 2 — LIFT 변경 시 서든 보정
+// 구기체 계산기2와 동일한 구조, 스케일만 390 기준
+// result = (sudden0 + 287) * (390 - lift) / 390 - 287
+function n_calc2() {
+    const sudden0 = parseFloat(document.getElementById('n_suddenAtLift0').value);
+    const lift = parseFloat(document.getElementById('n_liftValue2').value);
+    const el = document.getElementById('n_result2');
+    el.textContent = ''; el.classList.remove('error');
+    if (isNaN(sudden0) || isNaN(lift)) return;
+    const result = (sudden0 + 287) * (390 - lift) / 390 - 287;
+    let text = result.toFixed(4);
+    if (result < -270) text += ' ⚠️ 설정 가능 범위(-270) 초과';
+    el.textContent = text;
+}
+
+// 신기체 계산기 3 — 배속+ROOF 조합
+// ROOF = (1 - actualSpeed/targetSpeed) * 390
+// ROOF 0 이상인 가장 가까운 배속 찾기
+function n_calc3() {
+    const mainBpm = parseFloat(document.getElementById('n_mainBpm3').value);
+    const targetSpeed = parseFloat(document.getElementById('n_targetSpeed3').value);
+    const el = document.getElementById('n_result3');
+    el.innerHTML = ''; el.classList.remove('error');
+    if (isNaN(mainBpm) || isNaN(targetSpeed) || mainBpm <= 0 || targetSpeed <= 0) return;
+
+    let multiplier = Math.floor((targetSpeed / mainBpm) * 10) / 10;
+    for (let i = 0; i < 100; i++) {
+        if (multiplier <= 0) { el.textContent = '적절한 값을 찾을 수 없습니다.'; el.classList.add('error'); return; }
+        const actualSpeed = mainBpm * multiplier;
+        const loopValue = (1 - actualSpeed / targetSpeed) * 390;
+        if (loopValue >= 0) {
+            const roundedLoop = Math.round(loopValue);
+            // 체감속도: actualSpeed / (1 - loop/390)
+            const effectiveSpeed = actualSpeed / (1 - roundedLoop / 390);
+            const firstStr = `x${multiplier.toFixed(1)} (${Math.round(actualSpeed)}), ROOF ${roundedLoop}, ${Math.round(effectiveSpeed)}`;
+            el.innerHTML = firstStr;
+            return;
+        }
+        multiplier = parseFloat((multiplier - 0.1).toFixed(1));
+    }
+    el.textContent = '적절한 값을 찾을 수 없습니다.';
+    el.classList.add('error');
+}
+
+
+// ─── 토글 공통 ─────────────────────────────────────────────
+document.addEventListener('click', function(event) {
+    const button = event.target.closest('.toggle-details-btn');
+    if (!button) return;
+    const targetId = button.getAttribute('data-target');
+    const targetEl = document.getElementById(targetId);
+    const arrow = button.querySelector('.arrow');
+    if (!targetEl) return;
+    const isHidden = targetEl.style.display === 'none' || targetEl.style.display === '';
+    if (isHidden) {
+        targetEl.style.display = 'block';
+        button.classList.add('active');
+        arrow.textContent = '▲';
+    } else {
+        targetEl.style.display = 'none';
+        button.classList.remove('active');
+        arrow.textContent = '▼';
+    }
+});
+</script>
 
 </body>
 </html>
