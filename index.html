@@ -469,6 +469,21 @@
         </div>
         <div class="form-item">
             <div>
+                <label for="n_roofValue1">ROOF 수치 (0 = OFF)</label>
+                <input type="number" id="n_roofValue1" class="input-teal" oninput="n_calc1()" placeholder="입력 없으면 0으로 계산">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-roofValue1">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-roofValue1">
+                    <span class="notes-title">참고</span>
+                    <p>현재 사용 중인 ROOF 수치를 입력합니다. 입력하지 않으면 0으로 계산합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>ROOF를 17로 설정 중이라면 17을 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <div>
                 <label for="n_liftValue1">LIFT 수치 (0 = OFF, 200 = 최대)</label>
                 <input type="number" id="n_liftValue1" class="input-orange" oninput="n_calc1()" placeholder="입력 없으면 0으로 계산">
             </div>
@@ -724,7 +739,9 @@ function n_calc1() {
     if (isNaN(maxBpm) || isNaN(suddenBpm)) return;
     if (maxBpm === 0) { el.textContent = '#DIV/0!'; el.classList.add('error'); return; }
     if (isNaN(lift)) lift = 0;
-    const result = (1 - suddenBpm / maxBpm) * (390 - lift) - 287;
+    let roof = parseFloat(document.getElementById('n_roofValue1').value);
+    if (isNaN(roof)) roof = 0;
+    const result = (1 - suddenBpm / maxBpm) * (390 - lift) + roof - 287;
     let text = result.toFixed(4);
     if (result < -270) text += ' ⚠️ 설정 가능 범위(-270) 초과';
     else if (result > 80) text += ' ⚠️ 설정 가능 최대값(80) 초과';
