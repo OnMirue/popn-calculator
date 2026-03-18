@@ -238,7 +238,6 @@
     <button class="tab-btn new" onclick="switchTab('new')">✨ 신기체</button>
 </div>
 
-<!-- ═══════════════ 구기체 탭 ═══════════════ -->
 <div class="tab-panel old-panel active" id="tab-old">
 
     <div class="calculator">
@@ -425,7 +424,6 @@
     </div>
 </div>
 
-<!-- ═══════════════ 신기체 탭 ═══════════════ -->
 <div class="tab-panel new-panel" id="tab-new">
 
     <div class="calculator">
@@ -603,6 +601,21 @@
         </div>
         <div class="form-item">
             <div>
+                <label for="n_roofValue3">기존 사용 중인 ROOF 수치 (0 = OFF)</label>
+                <input type="number" id="n_roofValue3" class="input-teal" oninput="n_calc3()" placeholder="입력 없으면 0으로 계산">
+            </div>
+            <div>
+                <button type="button" class="toggle-details-btn" data-target="n_details-roofValue3">참고/예시 보기 <span class="arrow">▼</span></button>
+                <div class="details" id="n_details-roofValue3">
+                    <span class="notes-title">참고</span>
+                    <p>현재 사용 중인 ROOF 수치를 입력합니다. 입력하지 않으면 0으로 계산합니다.</p>
+                    <span class="example-title">사용예시</span>
+                    <p>기존에 ROOF를 195로 설정하고 있었다면 195를 입력합니다.</p>
+                </div>
+            </div>
+        </div>
+        <div class="form-item">
+            <div>
                 <label for="n_liftValue3">LIFT 수치 (0 = OFF, 200 = 최대)</label>
                 <input type="number" id="n_liftValue3" class="input-orange" oninput="n_calc3()" placeholder="입력 없으면 0으로 계산">
             </div>
@@ -724,10 +737,6 @@ function calculateSudden3() {
 //         리프트가 |L|만큼 아래에서 올리면, 서든이 가릴 수 있는 공간 = 390 - |L|
 
 // 신기체 계산기 1 — BPM 기반 서든 계산
-// 개념: BPM이 high→low로 변할 때 노트가 느려지는 비율 = (1 - low/high)
-//       이 비율을 가려야 구간 체감이 동일해짐
-//       가려야 할 단위 수 = (1 - low/high) * (390 - lift)
-//       서든 S = 가려야 할 단위 수 - 287
 function n_calc1() {
     const maxBpm = parseFloat(document.getElementById('n_maxBpm').value);
     const suddenBpm = parseFloat(document.getElementById('n_suddenBpm').value);
@@ -739,9 +748,6 @@ function n_calc1() {
     if (isNaN(lift)) lift = 0;
     let roof = parseFloat(document.getElementById('n_roofValue1').value);
     if (isNaN(roof)) roof = 0;
-    // 루프가 roof/390 비율을 이미 가리고 있으므로
-    // 남은 화면(390-lift-roof) 중 BPM변속 비율만큼 서든이 추가로 가려야 함
-    // 총 단위 = (1 - low/high) * (390 - lift - roof) + roof
     const result = (1 - suddenBpm / maxBpm) * (390 - lift - roof) + roof - 287;
     let text = result.toFixed(4);
     if (result < -270) text += ' ⚠️ 설정 가능 범위(-270) 초과';
@@ -750,8 +756,6 @@ function n_calc1() {
 }
 
 // 신기체 계산기 2 — LIFT 변경 시 서든 보정
-// 구기체 계산기2와 동일한 구조, 스케일만 390 기준
-// result = (sudden0 + 287) * (390 - lift) / 390 - 287
 function n_calc2() {
     const sudden0 = parseFloat(document.getElementById('n_suddenAtLift0').value);
     const lift = parseFloat(document.getElementById('n_liftValue2').value);
@@ -765,28 +769,39 @@ function n_calc2() {
 }
 
 // 신기체 계산기 3 — 배속+ROOF 조합
-// ROOF = (1 - actualSpeed/targetSpeed) * 390
-// ROOF 0 이상인 가장 가까운 배속 찾기
+// ROOF = 기존 ROOF + 추가로 가려야 할 ROOF
 function n_calc3() {
     const mainBpm = parseFloat(document.getElementById('n_mainBpm3').value);
     const targetSpeed = parseFloat(document.getElementById('n_targetSpeed3').value);
     let lift = parseFloat(document.getElementById('n_liftValue3').value);
+    let initialRoof = parseFloat(document.getElementById('n_roofValue3').value);
+    
     const el = document.getElementById('n_result3');
     el.innerHTML = ''; el.classList.remove('error');
+    
     if (isNaN(mainBpm) || isNaN(targetSpeed) || mainBpm <= 0 || targetSpeed <= 0) return;
     if (isNaN(lift)) lift = 0;
+    if (isNaN(initialRoof)) initialRoof = 0;
 
     let multiplier = Math.floor((targetSpeed / mainBpm) * 10) / 10;
     for (let i = 0; i < 100; i++) {
         if (multiplier <= 0) { el.textContent = '적절한 값을 찾을 수 없습니다.'; el.classList.add('error'); return; }
         const actualSpeed = mainBpm * multiplier;
-        // 리프트가 있으면 ROOF가 가릴 수 있는 공간이 (390 - lift)로 줄어듦
-        const loopValue = (1 - actualSpeed / targetSpeed) * (390 - lift);
-        if (loopValue >= 0) {
-            const roundedLoop = Math.round(loopValue);
-            // 체감속도: actualSpeed / (1 - loop/(390-lift))
-            const effectiveSpeed = actualSpeed / (1 - roundedLoop / (390 - lift));
-            const firstStr = `x${multiplier.toFixed(1)} (${Math.round(actualSpeed)}), ROOF ${roundedLoop}, ${Math.round(effectiveSpeed)}`;
+        
+        // 기존에 ROOF와 LIFT로 가려진 부분을 제외한 '실제 노트가 보이는 영역'
+        const visibleArea = 390 - lift - initialRoof;
+        
+        // 목표 속도를 맞추기 위해 남은 영역에서 추가로 가려야 하는 ROOF 수치
+        const additionalRoof = (1 - actualSpeed / targetSpeed) * visibleArea;
+        
+        if (additionalRoof >= 0) {
+            const roundedAdditional = Math.round(additionalRoof);
+            const finalRoof = initialRoof + roundedAdditional; // 최종 설정할 ROOF 값
+            
+            // 체감속도: 현재 배속 / (1 - (추가로 가린 ROOF / 기존 보이는 영역))
+            const effectiveSpeed = actualSpeed / (1 - roundedAdditional / visibleArea);
+            
+            const firstStr = `x${multiplier.toFixed(1)} (${Math.round(actualSpeed)}), ROOF ${finalRoof}, ${Math.round(effectiveSpeed)}`;
             el.innerHTML = firstStr;
             return;
         }
